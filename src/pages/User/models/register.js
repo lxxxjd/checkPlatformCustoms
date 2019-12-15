@@ -1,5 +1,5 @@
 import { fakeRegister} from '@/services/api';
-import { checkUserName ,sendVerify,verifyTel,registerPreCompany } from '@/services/user';
+import {sendVerify,verifyTel, addCustomsUser, getRepeatUsername, getRepeatTel } from '@/services/user';
 import { setAuthority } from '@/utils/authority';
 import { reloadAuthorized } from '@/utils/Authorized';
 
@@ -47,18 +47,18 @@ export default {
     },
 
 
-    *checkUserNameFetch({ payload,callback }, { call, put }) {
-      const response = yield call(checkUserName, payload);
-      yield put({
-        type: 'getCheckUserNameResult',
-        payload: response,
-      });
+    *getRepeatUsername({ payload,callback }, { call, put }) {
+      const response = yield call(getRepeatUsername, payload);
       if (callback) callback(response.data);
     },
 
+    *getRepeatTel({ payload,callback }, { call, put }) {
+      const response = yield call(getRepeatTel, payload);
+      if (callback) callback(response.data);
+    },
 
-    *registerPreCompany({ payload,callback }, { call, put }) {
-      const response = yield call(registerPreCompany, payload);
+    *addCustomsUser({ payload,callback }, { call, put }) {
+      const response = yield call(addCustomsUser, payload);
       yield put({
         type: 'registerPreCompanyResult',
         payload: response,
