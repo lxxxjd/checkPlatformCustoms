@@ -1,4 +1,4 @@
-import { getAllMan} from '@/services/Main';
+import { getAllMan,getReportByCustoms} from '@/services/Main';
 
 export default {
   namespace: 'main',
@@ -9,13 +9,25 @@ export default {
       pagination: {},
     },
     reports:[],
+    getReportByCustomsResult:[],
   },
 
   effects: {
     *getAllMan({ payload,callback }, { call, put }) {
       const response = yield call(getAllMan, payload);
-      if (callback) callback(response);    
+      if (callback) callback(response);
     },
+
+    *getReportByCustoms({ payload,callback }, { call, put }) {
+      const response = yield call(getReportByCustoms, payload);
+      yield put({
+        type: 'getReportByCustomsResult',
+        payload: response.data,
+
+      });
+      if (callback) callback(response.data);
+    },
+
   },
 
   reducers: {
@@ -23,6 +35,12 @@ export default {
       return {
         ...state,
         data: action.payload,
+      };
+    },
+    getReportByCustomsResult(state, { payload }) {
+      return {
+        ...state,
+        getReportByCustomsResult: payload.data,
       };
     },
   },

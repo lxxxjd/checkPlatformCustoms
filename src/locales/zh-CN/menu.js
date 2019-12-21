@@ -28,6 +28,8 @@ export default {
   'menu.Cargo.ItemList':'条目',
   'menu.Cargo.StandardList':'标准条目',
 
+  'menu.Main':'海关审阅',
+  'menu.Main.MainQuery':'海关审阅',
 
   'menu.dashboard': 'Dashboard',
   'menu.dashboard.analysis': '分析页',
