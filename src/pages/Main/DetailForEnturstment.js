@@ -72,39 +72,16 @@ class DetailForEnturstment extends Component {
     const { dispatch } = this.props;
     const user = JSON.parse(localStorage.getItem("userinfo"));
     dispatch({
-      type: 'entrustment/getReport',
+      type: 'main/getReport',
       payload: reportnNo,
     });
     dispatch({
-      type: 'testRecordEntrustment/getRecordInfo',
+      type: 'main/getRecordInfo',
       payload:{
          reportno : reportnNo,
          source : '委托',
       }
     });
-  }
-  componentDidMount(){
-    const {
-      entrustment:{ report  },
-      dispatch
-    } = this.props;
-
-    if(report.cnasCode!==undefined && report.cnasCode!==null  ){
-      if(report.iscnas === 1){
-        dispatch({
-          type: 'entrustment/getCnasInfo',
-          payload: {
-            checkCode:report.cnasCode,
-          },
-          callback: (response) => {
-            if (response.code === 200) {
-              this.setState({cnasInfo: response.data});
-            }
-          }
-        });
-      }
-    }
-
   }
   previewItem = text => {
     const { dispatch } = this.props;
@@ -114,7 +91,7 @@ class DetailForEnturstment extends Component {
       reportno:reportno
     };
     dispatch({
-      type: 'testRecordEntrustment/getRecord',
+      type: 'main/getRecord',
       payload:params,
       callback:(response) =>{
         if(response.code === 400){
@@ -167,11 +144,9 @@ class DetailForEnturstment extends Component {
   }
   render() {
     const {
-      entrustment,
-      testRecordEntrustment:{recordData},
+      main:{recordData, readRecords, report},
       loading
     } = this.props;
-    const { report  } = entrustment;
     const { showVisible ,url, cnasInfo} = this.state;
     return (
       <PageHeaderWrapper loading={loading}>
@@ -215,7 +190,6 @@ class DetailForEnturstment extends Component {
             <Descriptions.Item label="业务分类">{report.businesssort}</Descriptions.Item>
             <Descriptions.Item label="执行部门">{report.section}</Descriptions.Item>
             <Descriptions.Item label="海关部门">{report.costomsName}</Descriptions.Item>
-
           </Descriptions>
           <Divider style={{ marginBottom: 32 }} />
           <Descriptions size="large" title="检查对象" style={{ marginBottom: 32 }} bordered>
@@ -245,7 +219,7 @@ class DetailForEnturstment extends Component {
             <Table
               size="middle"
               loading={loading}
-              dataSource={recordData}
+              dataSource={readRecords}
               columns={this.columns1}
               rowKey="recordname"
               pagination={{showQuickJumper:true,showSizeChanger:true}}

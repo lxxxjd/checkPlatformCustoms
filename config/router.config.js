@@ -144,7 +144,19 @@ export default [
           },
         ],
       },
+      {
+        path: '/Main',
+        icon: 'file',
+        name: 'Main',
+        routes: [
 
+          {
+            path: '/Main/DetailForEnturstment',
+            name: 'DetailForEnturstment',
+            component: './Main/DetailForEnturstment',
+          },
+        ],
+      },
 
 
       {
