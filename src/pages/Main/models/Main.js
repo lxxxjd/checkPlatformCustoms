@@ -1,4 +1,5 @@
-import { getAllMan, getAllReadRecords, getRecordInfo, queryReport, getRecord} from '@/services/Main';
+import { getAllMan, getReportByCustoms, getAllReadRecords, getRecordInfo, queryReport, getRecord} from '@/services/Main';
+
 
 export default {
   namespace: 'main',
@@ -11,13 +12,14 @@ export default {
     reports:[],
     readRecords:[],
     recordData:[],
-    report:{}
+    report:{},
+    getReportByCustomsResult:[],
   },
 
   effects: {
     *getAllMan({ payload,callback }, { call, put }) {
       const response = yield call(getAllMan, payload);
-      if (callback) callback(response);    
+      if (callback) callback(response);
     },
     *getAllReadRecords({ payload,callback }, { call, put }) {
       const response = yield call(getAllReadRecords, payload);
@@ -51,6 +53,15 @@ export default {
       });
       if (callback) callback(response);
     },
+    *getReportByCustoms({ payload,callback }, { call, put }) {
+      const response = yield call(getReportByCustoms, payload);
+      yield put({
+        type: 'getReportByCustomsResult',
+        payload: response.data,
+
+      });
+      if (callback) callback(response.data);
+    },
   },
 
   reducers: {
@@ -76,6 +87,12 @@ export default {
       return {
         ...state,
         readRecords: action.payload,
+      }
+    },    
+    getReportByCustomsResult(state, { payload }) {
+      return {
+        ...state,
+        getReportByCustomsResult: payload.data,
       };
     },
   },
