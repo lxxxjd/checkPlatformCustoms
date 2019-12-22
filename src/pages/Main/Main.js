@@ -190,7 +190,6 @@ class Main extends PureComponent {
   };
 
   handleCancel = () =>{
-    this.setState({visible:false});
     this.setState({peopleVisible:false});
   };
 

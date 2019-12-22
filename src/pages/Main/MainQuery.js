@@ -21,54 +21,6 @@ import styles from '../table.less';
 
 
 
-
-// 查看框
-const ReviewFrom = (props => {
-  const { modalReviewVisible, handleModalReviewVisible,modalInfo  } = props;
-
-  // 处理操作时间
-  const handleDate = (val) => {
-    if(val!==undefined && val!==null){
-      return  <span>{ moment(val).format('YYYY-MM-DD')}</span>;
-    }
-    return null;
-  };
-  // 处理操作时间
-  const date = handleDate(modalInfo.makingdate);
-  return (
-    <Modal
-      destroyOnClose
-      title="查看委托详情"
-      visible={modalReviewVisible}
-      style={{ top: 100 }}
-      width={800}
-      onCancel={() => handleModalReviewVisible()}
-      footer={[
-        <Button type="primary" onClick={() => handleModalReviewVisible()}>
-          关闭
-        </Button>
-      ]}
-    >
-      <Descriptions bordered>
-        <Descriptions.Item label="委托编号">{modalInfo.reportno}</Descriptions.Item>
-        <Descriptions.Item label="船名标识">{modalInfo.shipname}</Descriptions.Item>
-        <Descriptions.Item label="检查品名">{modalInfo.cargoname}</Descriptions.Item>
-        <Descriptions.Item label="委托编号">{modalInfo.cargoname}</Descriptions.Item>
-        <Descriptions.Item label="委托名称">{modalInfo.samplename}</Descriptions.Item>
-        <Descriptions.Item label="委托用途">{modalInfo.sampleuse}</Descriptions.Item>
-        <Descriptions.Item label="持有人">{modalInfo.duration}</Descriptions.Item>
-        <Descriptions.Item label="保存天数">{modalInfo.reportno}</Descriptions.Item>
-        <Descriptions.Item label="存放位置">{modalInfo.position}</Descriptions.Item>
-        <Descriptions.Item label="制备日期">{date}</Descriptions.Item>
-        <Descriptions.Item label="状态">{modalInfo.status}</Descriptions.Item>
-      </Descriptions>
-    </Modal>
-  );
-});
-
-
-
-
 let id = 0;
 
 // 正文页面
@@ -90,8 +42,24 @@ class MainQuery extends PureComponent {
     modalReviewVisible:false,
     modalInfo :{},
     mainResult:[],
+    peopleVisible:false,
+    man:[],
   };
+  columns1 = [
+    {
+      title: '检验人员',
+      dataIndex: 'inspman',
+    },
 
+    {
+      title: '联系方式',
+      dataIndex: 'tel',
+    },
+    {
+      title: '任务',
+      dataIndex: 'inspway',
+    },
+  ];
   columns = [
     {
       title: '委托编号',
@@ -105,21 +73,51 @@ class MainQuery extends PureComponent {
       }</span>
     },
     {
-      title: '委托人',
+      title: '检验机构',
       dataIndex: 'applicant',
-    },
-    {
-      title: '船名标识',
-      dataIndex: 'shipname',
     },
     {
       title: '检查品名',
       dataIndex: 'cargoname',
     },
     {
+      title: '申报数量',
+      dataIndex: 'quantityd',
+    },
+    {
+      title: '船名标识',
+      dataIndex: 'shipname',
+    },
+    {
+      title: '状态日期',
+      dataIndex: 'overalltime',
+      render: val => <span>{
+        moment(val).format('YYYY-MM-DD')
+      }</span>
+    },
+    {
+      title: '状态',
+      dataIndex: 'overallstate',
+    },
+    {
+      title: '审阅日期',
+      dataIndex: 'reportdate',
+      render: val => <span>{
+        moment(val).format('YYYY-MM-DD')
+      }</span>
+    },
+    {
+      title: '审阅人',
+      dataIndex: '',
+    },
+    {
       title: '操作',
       render: (text, record) => (
         <Fragment>
+          <a onClick={() => this.peopleItem(text, record)}>人员</a>
+          &nbsp;&nbsp;
+          <a onClick={() => this.fileItem(text, record)}>审批</a>
+          &nbsp;&nbsp;
           <a onClick={() => this.previewItem(text, record)}>委托详情</a>
         </Fragment>
       ),
@@ -146,12 +144,28 @@ class MainQuery extends PureComponent {
   };
 
   previewItem = text => {
+    sessionStorage.setItem('reportno',text.reportno);
     router.push({
-      pathname:'/Entrustment/DetailForEntrustment',
+      pathname:'/Main/DetailForEnturstment',
     });
-    localStorage.setItem('reportDetailNo',text.reportno);
   };
 
+  peopleItem = text =>{
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'main/getAllMan',
+      payload: {
+        reportno:text.reportno,
+        certcode:text.certcode,
+      },
+      callback:response =>{
+        if (response.code === 200) {
+          this.setState({man:response.data});
+        }
+      }
+    });
+    this.setState({peopleVisible:true});
+  };
 
   handleFormReset = () => {
     const { form } = this.props;
@@ -161,9 +175,9 @@ class MainQuery extends PureComponent {
 
   };
 
-
-
-
+  handleCancel = () =>{
+    this.setState({peopleVisible:false});
+  };
 
   handleSearch = e => {
     e.preventDefault();
@@ -374,7 +388,7 @@ class MainQuery extends PureComponent {
     const { getFieldDecorator, getFieldValue } = this.props.form;
     getFieldDecorator('keys', { initialValue: [] });
     const keys = getFieldValue('keys');
-    const { modalReviewVisible,modalInfo ,mainResult} = this.state;
+    const { modalReviewVisible,modalInfo ,mainResult, peopleVisible,man } = this.state;
     const parentMethods = {
       handleModalReviewVisible:this.handleModalReviewVisible,
     };
@@ -449,8 +463,7 @@ class MainQuery extends PureComponent {
 
 
     return (
-      <PageHeaderWrapper title="委托查询">
-        <ReviewFrom {...parentMethods} modalReviewVisible={modalReviewVisible} modalInfo={modalInfo} />
+      <PageHeaderWrapper title="主页">
         <Card bordered={false} size="small">
           <Form onSubmit={this.handleSubmit}>
             <div className={styles.tableListForm}>{this.renderSimpleForm()}</div>
@@ -467,6 +480,21 @@ class MainQuery extends PureComponent {
             />
           </div>
         </Card>
+        <Modal
+          title="人员"
+          visible={peopleVisible}
+          onOk={this.handleCancel}
+          onCancel={this.handleCancel}
+        >
+          <Table
+              size="middle"
+              loading={loading}
+              rowKey='inspman'
+              dataSource={man}
+              columns={this.columns1}
+              pagination={{showQuickJumper:true,showSizeChanger:true}}
+            />
+        </Modal>
       </PageHeaderWrapper>
     );
   }

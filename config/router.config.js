@@ -50,22 +50,14 @@ export default [
             name: 'MainQuery',
             component: './Main/MainQuery',
           },
-        ],
-      },
-      {
-        path: '/Main',
-        icon: 'file',
-        name: 'Main',
-        routes: [
           {
             path: '/Main/DetailForEnturstment',
             name: 'DetailForEnturstment',
             component: './Main/DetailForEnturstment',
+            hideInMenu:'true'
           },
         ],
       },
-
-
       {
         component: '404',
       },

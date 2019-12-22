@@ -82,6 +82,12 @@ class DetailForEnturstment extends Component {
          source : '委托',
       }
     });
+    dispatch({
+      type: 'main/getAllReadRecords',
+      payload:{
+         reportno : reportnNo,
+      }
+    });
   }
   previewItem = text => {
     const { dispatch } = this.props;
@@ -183,13 +189,6 @@ class DetailForEnturstment extends Component {
             <Descriptions.Item label="联系人">{report.agentname}</Descriptions.Item>
             <Descriptions.Item label="联系电话">{report.agenttel}</Descriptions.Item>
             <Descriptions.Item label="付款人">{report.payer}</Descriptions.Item>
-            <Descriptions.Item label="业务来源">{report.businesssource}</Descriptions.Item>
-            <Descriptions.Item label="贸易方式">{report.tradeway}</Descriptions.Item>
-            <Descriptions.Item label="证书要求" >{report.certstyle}</Descriptions.Item>
-            <Descriptions.Item label="自编号">{report.reportno20}</Descriptions.Item>
-            <Descriptions.Item label="业务分类">{report.businesssort}</Descriptions.Item>
-            <Descriptions.Item label="执行部门">{report.section}</Descriptions.Item>
-            <Descriptions.Item label="海关部门">{report.costomsName}</Descriptions.Item>
           </Descriptions>
           <Divider style={{ marginBottom: 32 }} />
           <Descriptions size="large" title="检查对象" style={{ marginBottom: 32 }} bordered>

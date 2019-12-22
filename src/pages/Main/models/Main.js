@@ -86,7 +86,7 @@ export default {
     getReadRecords(state, action) {
       return {
         ...state,
-        readRecords: action.payload,
+        readRecords: payload.data,
       }
     },    
     getReportByCustomsResult(state, { payload }) {
