@@ -13,7 +13,7 @@ import {
   Table,
   Modal,
   Rate,
-  notification
+  notification,
 } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import styles from './style.less';

@@ -42,6 +42,7 @@ export default {
   'validation.company.required':'Please enter a company',
   'validation.certcode.required':'Please enter a certcode',
   'validation.username.required':'Please enter a username',
+  'validation.nameC.required':'Please enter a name',
   'validation.contact.required':'Please enter a contact',
   'validation.userExist.repeated':'username is repeated',
   'validation.userExist.error':'error',

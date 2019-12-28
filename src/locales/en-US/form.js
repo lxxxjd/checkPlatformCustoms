@@ -6,6 +6,7 @@ export default {
   'form.company.placeholder':"Company",
   'form.certcode.placeholder':"Certcode",
   'form.username.placeholder':"Username",
+  'form.nameC.placeholder':"Name",
   'form.contact.placeholder':"Contact",
   'form.save': 'Save',
   'form.email.placeholder': 'Email',

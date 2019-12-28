@@ -8,6 +8,7 @@ export default {
   'form.company.placeholder':"公司名",
   'form.certcode.placeholder':"Certcode",
   'form.username.placeholder':"用户名",
+  'form.nameC.placeholder':"姓名",
   'form.contact.placeholder':"联系人",
   'form.password.placeholder': '至少6位密码，区分大小写',
   'form.confirm-password.placeholder': '确认密码',

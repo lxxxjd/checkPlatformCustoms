@@ -119,7 +119,7 @@ class Register extends Component {
         const params={
           tel,
           verifyCode
-        }
+        };
         dispatch({
           type: 'register/verifyTel',
           payload:params,
@@ -137,23 +137,23 @@ class Register extends Component {
                       if(response2 === "success"){
                         message.success("注册成功");
                       }else if(response2 === "手机号未验证"){
-                        message.success("手机号未验证");
+                        message.error("手机号未验证");
                       } else if(response2 === "公司重复注册"){
-                        message.success("公司重复注册");
+                        message.error("公司重复注册");
                       } else{
                         // 失败
-                        message.success("注册失败");
+                        message.error("注册失败");
                       }
                     }else{
-                      message.success("注册失败");
+                      message.error("注册失败");
                     }
                   }
                 });
               }else{
-                message.success("验证码错误");
+                message.error("验证码错误");
               }
             }else{
-              message.success("验证码失败");
+              message.error("验证码失败");
             }
             // 注册逻辑
           }
@@ -184,12 +184,10 @@ class Register extends Component {
       type: 'register/getRepeatUsername',
       payload:{username:value},
       callback: (response) => {
-        if (response===undefined || response === "error") {
-          callback(formatMessage({ id: 'validation.userExist.error' }));
-        } else if(response === "repeat"){
-          callback(formatMessage({ id: 'validation.userExist.repeated' }));
-        }else{
+        if (response==="success") {
           callback();
+        }else{
+          callback(formatMessage({ id: 'validation.userExist.repeated' }));
         }
       }
     });
@@ -368,6 +366,23 @@ class Register extends Component {
                     type="password"
                     placeholder={formatMessage({ id: 'form.confirm-password.placeholder' })}
                   />
+                )}
+              </Col>
+            </Row>
+          </FormItem>
+          <FormItem>
+            <Row gutter={4}>
+              <Col span={5}><div>姓名：</div></Col>
+              <Col span={19}>
+                {getFieldDecorator('nameC', {
+                  rules: [
+                    {
+                      required: true,
+                      message: formatMessage({ id: 'validation.nameC.required' }),
+                    },
+                  ],
+                })(
+                  <Input size="large" placeholder={formatMessage({ id: 'form.nameC.placeholder' })} />
                 )}
               </Col>
             </Row>

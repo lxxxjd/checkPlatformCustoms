@@ -39,7 +39,7 @@ export default [
     component: '../layouts/BasicLayout',
     Routes: ['src/pages/Authorized'],
     routes: [
-
+      { path: '/', redirect: '/Main/MainQuery',authority: ['admin', 'user']},
       {
         path: '/Main',
         icon: 'profile',

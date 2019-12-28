@@ -12,11 +12,84 @@ import {
   Select,
   Table, message, Icon,
   Checkbox,
-  Image, Modal, Descriptions,Switch,
+  Image, Modal, Descriptions,Switch,Tree, Spin, Alert,Rate,
+  Layout,
 } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import queryStyles from './MainQuery.less'
 import styles from '../table.less';
+
+const { Header, Footer, Sider, Content } = Layout;
+const { TreeNode } = Tree;
+
+
+
+
+
+const CertForm = Form.create()(props => {
+
+  const { form,showVisible,showCancel,value,onSelect,treeData,reviewReport,renderFileInfo,renderTreeNodes} = props;
+  const okHandle = () => {
+    form.validateFields((err, fieldsValue) => {
+      if (err){
+        message.error("请填写质量评价");
+        return;
+      }
+      reviewReport(fieldsValue);
+      form.resetFields();
+    });
+  };
+
+
+  return (
+    <Modal
+      title="审阅"
+      visible={showVisible}
+      onCancel={showCancel}
+      footer={[
+        <div>
+          <span style={{marginRight:20}}>检验质量：</span>
+          {form.getFieldDecorator('approver1', {
+            initialValue:0,
+            rules: [{  required: true, message: '请评分检验质量' }],
+          })(
+            <Rate />
+            )}
+          <span style={{marginRight:20}}>证单质量：</span>
+          {form.getFieldDecorator('approver2', {
+            initialValue:0,
+            rules: [{  required: true, message: '请评分证单质量' }],
+          })(
+            <Rate />
+          )}
+          <Button key="cancel" type="primary" onClick={showCancel}> 关闭</Button>
+          <Button key="submit2" type="primary" onClick={okHandle}>审阅</Button>
+          <Button key="submit3" type="primary" onClick={okHandle}>退回</Button>
+        </div>
+      ]}
+      style={{ top: 10 }}
+      width={document.body.clientWidth*0.8}
+      height={document.body.clientHeight*0.6}
+    >
+      <Layout>
+        <Content style={{margin:10}}>
+          <div>
+            <Row>
+              <Col span={24}>
+                {renderFileInfo(value)}
+              </Col>
+            </Row>
+          </div>
+        </Content>
+        <Sider theme="light" width={310}>
+          <Tree showLine defaultExpandedKeys={['reportDetail']} defaultExpandAll onSelect={onSelect}>{renderTreeNodes(treeData)}</Tree>
+        </Sider>
+      </Layout>
+    </Modal>
+  );
+
+});
+
 
 
 
@@ -44,7 +117,52 @@ class MainQuery extends PureComponent {
     mainResult:[],
     peopleVisible:false,
     man:[],
+
+    // 加载中
+    loadingState: false,
+
+
+    // 审阅部分
+    showVisible: false,
+    text: {}, // 当前信息
+    urls: "", // 切换pdf的url
+    value: 'reportDetail', // 切换tab拟制页面
+    checkData: {},   // 现场检查信息
+    reportDetail: {},  // 委托详情
+    treeData: [],
+    renderFormData: [], // 当前data
+    renderFormColumns: [],// 当前表格的信息
+    sampleColumnsLink: [ // 分析检测表格头
+      {
+        title: '委托编号',
+        dataIndex: 'reportno',
+      },
+      {
+        title: '样品编号',
+        dataIndex: 'sampleno',
+      },
+      {
+        title: '样品名称',
+        dataIndex: 'samplename',
+      },
+      {
+        title: '检查项目',
+        dataIndex: 'itemC',
+      },
+      {
+        title: '检验标准',
+        dataIndex: 'teststandard',
+      },
+      {
+        title: '结果',
+        dataIndex: 'testresult',
+      }
+    ],
+
+
   };
+
+
   columns1 = [
     {
       title: '检验人员',
@@ -60,6 +178,7 @@ class MainQuery extends PureComponent {
       dataIndex: 'inspway',
     },
   ];
+
   columns = [
     {
       title: '委托编号',
@@ -68,9 +187,7 @@ class MainQuery extends PureComponent {
     {
       title: '委托日期',
       dataIndex: 'reportdate',
-      render: val => <span>{
-        moment(val).format('YYYY-MM-DD')
-      }</span>
+      render: val => this.isValidDate(val),
     },
     {
       title: '检验机构',
@@ -91,24 +208,20 @@ class MainQuery extends PureComponent {
     {
       title: '状态日期',
       dataIndex: 'overalltime',
-      render: val => <span>{
-        moment(val).format('YYYY-MM-DD')
-      }</span>
+      render: val => this.isValidDate(val),
     },
     {
       title: '状态',
       dataIndex: 'overallstate',
     },
     {
-      title: '审阅日期',
-      dataIndex: 'reportdate',
-      render: val => <span>{
-        moment(val).format('YYYY-MM-DD')
-      }</span>
+      title: '审阅人',
+      dataIndex: 'approveManNameC',
     },
     {
-      title: '审阅人',
-      dataIndex: '',
+      title: '审阅日期',
+      dataIndex: 'approvedate',
+      render: val => this.isValidDate(val),
     },
     {
       title: '操作',
@@ -116,7 +229,7 @@ class MainQuery extends PureComponent {
         <Fragment>
           <a onClick={() => this.peopleItem(text, record)}>人员</a>
           &nbsp;&nbsp;
-          <a onClick={() => this.fileItem(text, record)}>审批</a>
+          <a onClick={() => this.approveItem(text, record)}>审批</a>
           &nbsp;&nbsp;
           <a onClick={() => this.previewItem(text, record)}>委托详情</a>
         </Fragment>
@@ -128,6 +241,7 @@ class MainQuery extends PureComponent {
   componentDidMount() {
     this.init();
   }
+
 
   // eslint-disable-next-line react/sort-comp
   init =() =>{
@@ -143,11 +257,50 @@ class MainQuery extends PureComponent {
     });
   };
 
+  /*
+  this.setState({showVisible:true});
+          this.setState({text});
+   */
+
+
+  isValidDate =date=> {
+    if(date !==undefined && date !==null ){
+      return <span>{moment(date).format('YYYY-MM-DD')}</span>;
+    }
+    return [];
+  };
+
   previewItem = text => {
     sessionStorage.setItem('reportno',text.reportno);
     router.push({
       pathname:'/Main/DetailForEnturstment',
     });
+  };
+
+  approveItem = text =>{
+
+    this.setState({loadingState:true});
+    const { dispatch } = this.props;
+    this.setState({reportDetail:text});
+    this.setState({value:"reportDetail"});
+    const reportnNo = text.reportno;
+    // 获取信息
+    dispatch({
+      type: 'certificate/getMainInfo',
+      payload:{reportno:reportnNo},
+      callback: (response2) => {
+        if(response2){
+          this.setState({treeData:[]});
+          this.state.treeData.push(response2);
+          this.setState({showVisible:true});
+          // eslint-disable-next-line react/no-unused-state
+          this.setState({text});
+          this.setState({loadingState:false});
+        }
+      }
+    });
+
+
   };
 
   peopleItem = text =>{
@@ -376,6 +529,186 @@ class MainQuery extends PureComponent {
   };
 
 
+  // 树控件的目录数据
+  onSelect = (selectedKeys, info) => {
+    const { dispatch } = this.props;
+    if(selectedKeys ===undefined || selectedKeys[0] ===undefined){
+      return null;
+    }
+    if( selectedKeys[0] === 'reportDetail' ){ // 委托详情
+      this.state.reportDetail = this.state.treeData[0].children[0].children[0].data;
+      this.setState({ value: selectedKeys[0] });
+    }else if (selectedKeys[0].indexOf("checkitem")  === 0) { //   检查
+      this.state.checkData = this.state.treeData[0].children[1].children[0].children[selectedKeys[0].substring(9)].data;
+      this.setState({ value: selectedKeys[0] });
+    } else if (selectedKeys[0].indexOf("testitem")  === 0) {   // 检测
+      this.state.renderFormData = this.state.treeData[0].children[2].children[0].children[selectedKeys[0].substring(8)].data;
+      this.state.renderFormColumns  = this.state.sampleColumnsLink;
+      this.setState({ value: selectedKeys[0] });
+    } else if (selectedKeys[0].indexOf("recordinfo")  === 0) {  // 附件
+      const key = selectedKeys[0].substring(10);
+      // 附件的url
+      dispatch({
+        type: 'certificate/getPdfUrlFetch',
+        payload: { id: key },
+        callback: (pdfresponse) => {
+          if (pdfresponse) {
+            this.state.urls = pdfresponse.data;
+            this.forceUpdate();
+          }
+        }
+      });
+      this.setState({ value: selectedKeys[0] });
+    }else if(selectedKeys[0].indexOf("certpdf")  === 0){   // 证书
+      const key = selectedKeys[0].substring(7);
+      dispatch({
+        type: 'certificate/getPdfByOssPath',
+        payload:{osspath:key},
+        callback: (response) => {
+          if (response) {
+            this.state.urls = response.data;
+            this.forceUpdate();
+          }
+        }
+      });
+      this.setState({ value: selectedKeys[0] });
+    }
+    return null;
+  };
+
+
+  showCancel = () =>{
+    this.setState({showVisible:false});
+  };
+
+
+
+
+  renderReportForm() {
+    const {reportDetail} = this.state;
+    return (
+      <div style={{width:'100%',height:document.body.clientHeight*0.8,backgroundColor:'white',padding:10}}>
+        <Descriptions style={{ marginBottom: 10 }} size='small' title="业务信息" bordered column={{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }}>
+          <Descriptions.Item label="委托编号">{reportDetail.reportno}</Descriptions.Item>
+          <Descriptions.Item label="委托日期">{(reportDetail.reportdate===undefined|| reportDetail.reportdate===null)?"": moment(reportDetail.reportdate).format('YYYY-MM-DD')}</Descriptions.Item>
+          <Descriptions.Item label="检验费">{reportDetail.price}</Descriptions.Item>
+          <Descriptions.Item label="申请人">{reportDetail.applicant}</Descriptions.Item>
+          <Descriptions.Item label="联系人">{reportDetail.applicantname}</Descriptions.Item>
+          <Descriptions.Item label="联系电话">{reportDetail.applicanttel}</Descriptions.Item>
+          <Descriptions.Item label="代理人">{reportDetail.agent}</Descriptions.Item>
+          <Descriptions.Item label="联系人">{reportDetail.agentname}</Descriptions.Item>
+          <Descriptions.Item label="联系电话">{reportDetail.agenttel}</Descriptions.Item>
+          <Descriptions.Item label="付款人">{reportDetail.payer}</Descriptions.Item>
+          <Descriptions.Item label="业务来源">{reportDetail.businesssource}</Descriptions.Item>
+          <Descriptions.Item label="贸易方式">{reportDetail.tradeway}</Descriptions.Item>
+          <Descriptions.Item label="证书要求">{reportDetail.certstyle}</Descriptions.Item>
+          <Descriptions.Item label="自编号">{reportDetail.reportno20}</Descriptions.Item>
+          <Descriptions.Item label="业务分类">{reportDetail.businesssort}</Descriptions.Item>
+        </Descriptions>
+        <Descriptions style={{ marginBottom: 10 }} size='small' title="检查对象" bordered column={{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }}>
+          <Descriptions.Item label="检查品名">{reportDetail.cargoname}</Descriptions.Item>
+          <Descriptions.Item label="中文俗名">{reportDetail.chineselocalname}</Descriptions.Item>
+          <Descriptions.Item label="船名标识">{reportDetail.shipname}</Descriptions.Item>
+          <Descriptions.Item label="申报数量和单位">{((reportDetail.quantityd === undefined || reportDetail.quantityd === null ) ? "":reportDetail.quantityd  )+reportDetail.unit }</Descriptions.Item>
+          <Descriptions.Item label="检验时间">{(reportDetail.inspdate===undefined|| reportDetail.inspdate===null)?"": moment(reportDetail.inspdate).format('YYYY-MM-DD')}</Descriptions.Item>
+          <Descriptions.Item label="检查港口">{reportDetail.inspplace2}</Descriptions.Item>
+          <Descriptions.Item label="到达地点">{reportDetail.inspplace1}</Descriptions.Item>
+        </Descriptions>
+        <Descriptions style={{ marginBottom: 10 }} size='small' title="检查项目" bordered column={{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }}>
+          <Descriptions.Item label="申请项目">{reportDetail.inspway}</Descriptions.Item>
+          <Descriptions.Item label="检验备注">{reportDetail.inspwaymemo1}</Descriptions.Item>
+        </Descriptions>
+      </div>
+    );
+  }
+
+  renderCheckForm() {
+    const {checkData} = this.state;
+    return (
+      <div style={{width:'100%',height:document.body.clientHeight*0.8,backgroundColor:'white',padding:10}}>
+        <Descriptions style={{ marginBottom: 10 }} size='small' title="现场检查" bordered column={{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }}>
+          <Descriptions.Item label="检查项目">{checkData.inspway}</Descriptions.Item>
+          <Descriptions.Item label="开始日期">{(checkData.begindate===undefined|| checkData.begindate===null)?"":moment(checkData.begindate).format('YYYY-MM-DD')}</Descriptions.Item>
+          <Descriptions.Item label="结束日期">{(checkData.finishdate===undefined|| checkData.finishdate===null)?"":moment(checkData.finishdate).format('YYYY-MM-DD')}</Descriptions.Item>
+          <Descriptions.Item label="重量">{checkData.weight}</Descriptions.Item>
+          <Descriptions.Item label="标准">{checkData.standard}</Descriptions.Item>
+          <Descriptions.Item label="检验员">{checkData.inspman}</Descriptions.Item>
+          <Descriptions.Item label="检验仪器">{checkData.instrument}</Descriptions.Item>
+        </Descriptions>
+      </div>
+    );
+  }
+
+
+
+  renderLinkFileForm (){
+    const  {urls}  = this.state;
+    return (
+      <div style={{width:'100%',height:document.body.clientHeight*0.8,backgroundColor:'white',padding:10}}>
+        <embed runat="server" src={urls} style={{width:'100%', height:document.body.clientHeight*0.8}} type="application/pdf" />
+      </div>
+    );
+  }
+
+
+
+
+  renderForm(){
+    const {renderFormData,renderFormColumns} = this.state;
+    const {loading} = this.props;
+    return (
+      <div style={{width:'100%',height:document.body.clientHeight*0.8,backgroundColor:'white',padding:10}}>
+        <Table
+          size="middle"
+          dataSource={renderFormData}
+          columns={renderFormColumns}
+          rowKey="keyno"
+          loading={loading}
+          pagination={{showQuickJumper:true,showSizeChanger:true}}
+        />
+      </div>
+    );
+  }
+
+
+  renderTreeNodes = data =>
+    data.map(item => {
+      if (item.children) {
+        return (
+          <TreeNode title={item.title} key={item.key} dataRef={item}>
+            {this.renderTreeNodes(item.children)}
+          </TreeNode>
+        );
+      }
+      return <TreeNode key={item.key} {...item} dataRef={item} />;
+    });
+
+  renderFileInfo =(value)=>{
+    if(value === 'reportDetail'){
+      return this.renderReportForm();
+    }else if(value.indexOf("checkitem")  === 0){  // 现场检查
+      return this.renderCheckForm();
+    } else if(value.indexOf("testitem")  === 0){  // 分析测试
+      return this.renderForm();
+    }else if(value.indexOf("recordinfo")  === 0) { // 附件
+      return this.renderLinkFileForm();
+    }else if(value.indexOf("certpdf")  === 0) {  // 已经盖章的证书
+      return this.renderLinkFileForm();
+    }else{
+      return null;
+    }
+  };
+
+  reviewReport = (fieldValue) =>{
+    if(fieldValue.approver1===0 || fieldValue.approver2 ===0){
+      message.error("请选择服务评价");
+    }else{
+      this.setState({showVisible:false});
+    }
+  };
+
+
+
 
 
 
@@ -388,9 +721,14 @@ class MainQuery extends PureComponent {
     const { getFieldDecorator, getFieldValue } = this.props.form;
     getFieldDecorator('keys', { initialValue: [] });
     const keys = getFieldValue('keys');
-    const { modalReviewVisible,modalInfo ,mainResult, peopleVisible,man } = this.state;
+    const { mainResult, peopleVisible,man ,showVisible,value,treeData,loadingState } = this.state;
     const parentMethods = {
       handleModalReviewVisible:this.handleModalReviewVisible,
+      showCancel: this.showCancel,
+      onSelect:this.onSelect,
+      reviewReport:this.reviewReport,
+      renderFileInfo:this.renderFileInfo,
+      renderTreeNodes:this.renderTreeNodes,
     };
 
     const formItems = keys.map((k, index) => (
@@ -460,11 +798,21 @@ class MainQuery extends PureComponent {
       </div>
     ));
 
+    // 加载中
+    const container = (
+      <Alert
+        message="Alert message title"
+        description="Further details about the context of this alert."
+        type="info"
+      />
+    );
+
 
 
     return (
       <PageHeaderWrapper title="主页">
         <Card bordered={false} size="small">
+          <div className={queryStyles.loadingClass}><Spin spinning={loadingState} size="default" tip="正在加载数据..." /> </div>
           <Form onSubmit={this.handleSubmit}>
             <div className={styles.tableListForm}>{this.renderSimpleForm()}</div>
             <Row className={styles.tableListForm}>{formItems}</Row>
@@ -480,6 +828,7 @@ class MainQuery extends PureComponent {
             />
           </div>
         </Card>
+        <CertForm {...parentMethods} loading={loading} showVisible={showVisible} treeData={treeData} value={value}  />
         <Modal
           title="人员"
           visible={peopleVisible}
@@ -487,13 +836,13 @@ class MainQuery extends PureComponent {
           onCancel={this.handleCancel}
         >
           <Table
-              size="middle"
-              loading={loading}
-              rowKey='inspman'
-              dataSource={man}
-              columns={this.columns1}
-              pagination={{showQuickJumper:true,showSizeChanger:true}}
-            />
+            size="middle"
+            loading={loading}
+            rowKey='reportno'
+            dataSource={man}
+            columns={this.columns1}
+            pagination={{showQuickJumper:true,showSizeChanger:true}}
+          />
         </Modal>
       </PageHeaderWrapper>
     );
