@@ -56,6 +56,12 @@ export default [
             component: './Main/DetailForEnturstment',
             hideInMenu:'true'
           },
+          {
+            path: '/Main/UserInfo',
+            name: 'UserInfo',
+            component: './Main/UserInfo',
+            hideInMenu:'true'
+          },
         ],
       },
       {

@@ -31,6 +31,7 @@ export default {
   'menu.Main':'海关审阅',
   'menu.Main.MainQuery':'海关审阅',
   'menu.Main.DetailForEnturstment':'委托详情',
+  'menu.Main.UserInfo':'委托详情',
 
   'menu.dashboard': 'Dashboard',
   'menu.dashboard.analysis': '分析页',

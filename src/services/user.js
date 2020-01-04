@@ -45,6 +45,15 @@ export async function addCustomsUser(params) {
 }
 
 
+export async function updateCustomsUser(params) {
+  return request(`/api/customsuser/updateCustomsUser`,{
+    method: 'POST',
+    data: {
+      ...params,
+      method: 'post',
+    },
+  });
+}
 
 
 
