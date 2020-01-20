@@ -1,4 +1,5 @@
-import { getAllMan, getReportByCustoms, getAllReadRecords, getRecordInfo, queryReport, getRecord} from '@/services/Main';
+import { getAllMan, getReportByCustoms, getAllReadRecords, getRecordInfo, queryReport, getRecord,addReadRecordByCustoms,returnReadRecordByCustoms} from '@/services/Main';
+import {addReadRecord}  from '@/services/costoms';
 
 
 export default {
@@ -17,17 +18,37 @@ export default {
   },
 
   effects: {
+
+    *addReadRecord({ payload,callback }, { call, put }) {
+      const response = yield call(addReadRecord, payload);
+      if (callback) callback(response.data);
+    },
+
+
+    // 海关审阅
+    *addReadRecordByCustoms({ payload,callback }, { call, put }) {
+      const response = yield call(addReadRecordByCustoms, payload);
+      if (callback) callback(response.data);
+    },
+
+    // 海关退回
+    *returnReadRecordByCustoms({ payload,callback }, { call, put }) {
+      const response = yield call(returnReadRecordByCustoms, payload);
+      if (callback) callback(response.data);
+    },
+
     *getAllMan({ payload,callback }, { call, put }) {
       const response = yield call(getAllMan, payload);
       if (callback) callback(response);
     },
+
     *getAllReadRecords({ payload,callback }, { call, put }) {
       const response = yield call(getAllReadRecords, payload);
       yield put({
         type: 'getReadRecords',
         payload: response,
       });
-      if (callback) callback(response);    
+      if (callback) callback(response);
     },
     *getRecordInfo({ payload,callback }, { call, put }) {
       const response = yield call(getRecordInfo, payload);
@@ -88,7 +109,7 @@ export default {
         ...state,
         readRecords: payload.data,
       }
-    },    
+    },
     getReportByCustomsResult(state, { payload }) {
       return {
         ...state,

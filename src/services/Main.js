@@ -33,3 +33,24 @@ export async function getReportByCustoms(params) {
     },
   });
 }
+
+//  海关审阅
+export async function addReadRecordByCustoms(params) {
+  return request(`/api/readrecord/addReadRecordByCustoms`,{
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
+
+// 海关退回
+export async function returnReadRecordByCustoms(params) {
+  return request(`/api/readrecord/returnReadRecordByCustoms`,{
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
+

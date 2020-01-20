@@ -28,7 +28,7 @@ const { TreeNode } = Tree;
 
 const CertForm = Form.create()(props => {
 
-  const { form,showVisible,showCancel,value,onSelect,treeData,reviewReport,renderFileInfo,renderTreeNodes} = props;
+  const { form,showVisible,showCancel,value,onSelect,treeData,reviewReport,renderFileInfo,renderTreeNodes,returnReport ,reportDetail,user} = props;
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
       if (err){
@@ -36,6 +36,17 @@ const CertForm = Form.create()(props => {
         return;
       }
       reviewReport(fieldsValue);
+      form.resetFields();
+    });
+  };
+
+  const okHandleReturn = () => {
+    form.validateFields((err, fieldsValue) => {
+      if (err){
+        message.error("请填写质量评价");
+        return;
+      }
+      returnReport();
       form.resetFields();
     });
   };
@@ -48,27 +59,37 @@ const CertForm = Form.create()(props => {
       onCancel={showCancel}
       footer={[
         <div>
-          <span style={{marginRight:20}}>检验质量：</span>
-          {form.getFieldDecorator('approver1', {
-            initialValue:0,
-            rules: [{  required: true, message: '请评分检验质量' }],
-          })(
-            <Rate />
-            )}
-          <span style={{marginRight:20}}>证单质量：</span>
-          {form.getFieldDecorator('approver2', {
-            initialValue:0,
-            rules: [{  required: true, message: '请评分证单质量' }],
-          })(
-            <Rate />
-          )}
-          <Button key="cancel" type="primary" onClick={showCancel}> 关闭</Button>
-          <Button key="submit2" type="primary" onClick={okHandle}>审阅</Button>
-          <Button key="submit3" type="primary" onClick={okHandle}>退回</Button>
+          {reportDetail.approvemanUserName===null?
+            [
+              <div>
+                <span style={{marginRight:20}}>检验质量：</span>
+                {form.getFieldDecorator('approver1', {
+                  initialValue:0,
+                  rules: [{  required: true, message: '请评分检验质量' }],
+                })(
+                  <Rate />
+                  )}
+                <span style={{marginRight:20}}>证单质量：</span>
+                {form.getFieldDecorator('approver2', {
+                  initialValue:0,
+                  rules: [{  required: true, message: '请评分证单质量' }],
+                })(
+                  <Rate />
+                )}
+                <Button key="submit2" type="primary" onClick={okHandle}>审阅</Button>
+                <Button key="cancel" type="primary" onClick={showCancel}> 关闭</Button>
+              </div>]:[
+                <div>
+                  {user.username ===reportDetail.approvemanUserName?[<Button key="submit3" type="primary" onClick={okHandleReturn}>退回</Button>]:[]}
+                  <Button key="cancel" type="primary" onClick={showCancel}> 关闭</Button>
+                </div>
+            ]
+          }
+
         </div>
       ]}
       style={{ top: 10 }}
-      width={document.body.clientWidth*0.8}
+      width={document.body.clientWidth*0.9}
       height={document.body.clientHeight*0.6}
     >
       <Layout>
@@ -112,6 +133,7 @@ const getValue = obj =>
 @Form.create()
 class MainQuery extends PureComponent {
   state = {
+
     modalReviewVisible:false,
     modalInfo :{},
     mainResult:[],
@@ -124,11 +146,10 @@ class MainQuery extends PureComponent {
 
     // 审阅部分
     showVisible: false,
-    text: {}, // 当前信息
     urls: "", // 切换pdf的url
     value: 'reportDetail', // 切换tab拟制页面
     checkData: {},   // 现场检查信息
-    reportDetail: {},  // 委托详情
+    reportDetail: {},  // 当前委托详情
     treeData: [],
     renderFormData: [], // 当前data
     renderFormColumns: [],// 当前表格的信息
@@ -216,7 +237,7 @@ class MainQuery extends PureComponent {
     },
     {
       title: '审阅人',
-      dataIndex: 'approveManNameC',
+      dataIndex: 'approvemanUserName',
     },
     {
       title: '审阅日期',
@@ -256,11 +277,6 @@ class MainQuery extends PureComponent {
       }
     });
   };
-
-  /*
-  this.setState({showVisible:true});
-          this.setState({text});
-   */
 
 
   isValidDate =date=> {
@@ -703,10 +719,63 @@ class MainQuery extends PureComponent {
     if(fieldValue.approver1===0 || fieldValue.approver2 ===0){
       message.error("请选择服务评价");
     }else{
+        // 海关审阅
+        const {dispatch} =  this.props;
+        const user = JSON.parse(localStorage.getItem("userinfo"));
+        const {reportDetail} = this.state;
+        const params = {
+          reader:user.username,
+          organization:"海关",
+          company:user.company,
+          reportno:reportDetail.reportno,
+          tel:user.tel,
+          realname:user.nameC,
+        };
+        dispatch({
+          type: 'main/addReadRecordByCustoms',
+          payload:params,
+          callback:(response) =>{
+            if(response==="success"){
+                message.success("审阅成功");
+                this.init();
+            }else{
+              message.success("审阅失败");
+            }
+          }
+        });
       this.setState({showVisible:false});
     }
   };
 
+
+  returnReport = () =>{
+    // 海关审阅
+    const {dispatch} =  this.props;
+    const user = JSON.parse(localStorage.getItem("userinfo"));
+    const {reportDetail} = this.state;
+    const params = {
+      reader:user.username,
+      organization:"海关",
+      company:user.company,
+      reportno:reportDetail.reportno,
+    };
+    dispatch({
+      type: 'main/returnReadRecordByCustoms',
+      payload:params,
+      callback:(response) =>{
+        if(response==="success"){
+          message.success("退回成功");
+          this.init();
+        }else if(response==="noExist"){
+          message.success("记录不存在，退回失败");
+        }
+        else{
+          message.success("退回失败");
+        }
+      }
+    });
+    this.setState({showVisible:false});
+  };
 
 
 
@@ -721,12 +790,14 @@ class MainQuery extends PureComponent {
     const { getFieldDecorator, getFieldValue } = this.props.form;
     getFieldDecorator('keys', { initialValue: [] });
     const keys = getFieldValue('keys');
-    const { mainResult, peopleVisible,man ,showVisible,value,treeData,loadingState } = this.state;
+    const { mainResult, peopleVisible,man ,showVisible,value,treeData,loadingState ,reportDetail } = this.state;
+    const user = JSON.parse(localStorage.getItem("userinfo"));
     const parentMethods = {
       handleModalReviewVisible:this.handleModalReviewVisible,
       showCancel: this.showCancel,
       onSelect:this.onSelect,
       reviewReport:this.reviewReport,
+      returnReport:this.returnReport,
       renderFileInfo:this.renderFileInfo,
       renderTreeNodes:this.renderTreeNodes,
     };
@@ -828,7 +899,7 @@ class MainQuery extends PureComponent {
             />
           </div>
         </Card>
-        <CertForm {...parentMethods} loading={loading} showVisible={showVisible} treeData={treeData} value={value}  />
+        <CertForm {...parentMethods} loading={loading} showVisible={showVisible} treeData={treeData} value={value} reportDetail={reportDetail} user={user} />
         <Modal
           title="人员"
           visible={peopleVisible}

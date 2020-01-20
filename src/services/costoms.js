@@ -169,9 +169,14 @@ export async function deleteCNASLevelFour(params) {
 }
 
 
-
-
-
+export async function addReadRecord(params) {
+  return request(`/api/readrecord/addReadRecord`,{
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
 
 
 
