@@ -93,7 +93,7 @@ const CertForm = Form.create()(props => {
       height={document.body.clientHeight*0.6}
     >
       <Layout>
-        <Content style={{margin:10}}>
+        <Content style={{margin:15}}>
           <div>
             <Row>
               <Col span={24}>
@@ -102,7 +102,7 @@ const CertForm = Form.create()(props => {
             </Row>
           </div>
         </Content>
-        <Sider theme="light" width={310}>
+        <Sider theme='light' width={310} style={{paddingLeft:60}}>
           <Tree showLine defaultExpandedKeys={['reportDetail']} defaultExpandAll onSelect={onSelect}>{renderTreeNodes(treeData)}</Tree>
         </Sider>
       </Layout>
