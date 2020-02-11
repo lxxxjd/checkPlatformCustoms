@@ -7,7 +7,7 @@ import GlobalFooter from '@/components/GlobalFooter';
 import DocumentTitle from 'react-document-title';
 import SelectLang from '@/components/SelectLang';
 import styles from './UserLayout.less';
-import logo from '../assets/logo.svg';
+import logo from '../assets/logo.png';
 import getPageTitle from '@/utils/getPageTitle';
 
 const links = [
@@ -30,7 +30,7 @@ const links = [
 
 const copyright = (
   <Fragment>
-    Copyright <Icon type="copyright" /> 检验建设平台
+    Copyright <Icon type="copyright" /> 水木梁清
   </Fragment>
 );
 
@@ -62,9 +62,12 @@ class UserLayout extends Component {
             <div className={styles.top}>
               <div className={styles.header}>
                 <Link to="/">
-                  <img alt="logo" className={styles.logo} src={logo} />
-                  <span className={styles.title}>中国检验平台</span>
+                  <span className={styles.title}>水木梁清</span>
                 </Link>
+              </div>
+              <div style={{marginTop:10}}>
+                <img alt="404" src={logo} style={{height:27,paddingTop:2}} />
+                <span style={{verticalAlign:'middle',fontFamily:"楷体",fontSize:23,marginLeft:10,color:'black'}}>水木梁清</span>
               </div>
               <div className={styles.desc}></div>
             </div>

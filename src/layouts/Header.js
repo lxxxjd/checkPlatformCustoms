@@ -106,7 +106,7 @@ class HeaderView extends Component {
   };
 
   render() {
-    const { isMobile, handleMenuCollapse, setting } = this.props;
+    const { isMobile, handleMenuCollapse, setting,username,company } = this.props;
     const { navTheme, layout, fixedHeader } = setting;
     const { visible } = this.state;
     const isTop = layout === 'topmenu';
@@ -124,6 +124,8 @@ class HeaderView extends Component {
             onNoticeClear={this.handleNoticeClear}
             onMenuClick={this.handleMenuClick}
             onNoticeVisibleChange={this.handleNoticeVisibleChange}
+            username={username}
+            company={company}
             {...this.props}
           />
         ) : (
