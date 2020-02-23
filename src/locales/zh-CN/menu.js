@@ -1,4 +1,4 @@
-import CNASOne from '../../pages/Cargo/CNASOne';
+
 
 export default {
   'menu.home': '首页',
@@ -28,10 +28,16 @@ export default {
   'menu.Cargo.ItemList':'条目',
   'menu.Cargo.StandardList':'标准条目',
 
-  'menu.Main':'海关审阅',
-  'menu.Main.MainQuery':'海关审阅',
+  'menu.Main':'我的工作',
+  'menu.Main.MainQuery':'我要审阅',
   'menu.Main.DetailForEnturstment':'委托详情',
   'menu.Main.UserInfo':'委托详情',
+  'menu.Main.UserManage':'相关人员',
+  'menu.Main.ManDetail':'人员详情',
+  'menu.Main.CompanyUserManage':'人员信息',
+  'menu.Main.PreCustomsReceive':'备案审查',
+  'menu.Main.Intrusment':'仪器设备',
+  'menu.Main.CompanyInfo':'公司信息',
 
   'menu.dashboard': 'Dashboard',
   'menu.dashboard.analysis': '分析页',

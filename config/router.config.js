@@ -19,20 +19,6 @@ export default [
     ],
   },
 
-  // user
-  {
-    path: '/Home',
-    component: '../layouts/BlankLayout',
-    routes: [
-      { path: '/Home', redirect: '/Home/HomePage' },
-      { path: '/Home/HomePage', name: 'HomePage', component: './Home/HomePage' },
-
-      {
-        component: '404',
-      },
-    ],
-  },
-
   // app
   {
     path: '/',
@@ -62,6 +48,45 @@ export default [
             component: './Main/UserInfo',
             hideInMenu:'true'
           },
+          {
+            path: '/Main/UserManage',
+            name: 'UserManage',
+            component: './Main/UserManage',
+            hideInMenu:'true'
+          },
+
+          {
+            path: '/Main/ManDetail',
+            name: 'ManDetail',
+            component: './Main/ManDetail',
+            hideInMenu:'true'
+          },
+
+          {
+            path: '/Main/PreCustomsReceive',
+            name: 'PreCustomsReceive',
+            component: './Main/PreCustomsReceive',
+          },
+          {
+            path: '/Main/CompanyUserManage',
+            name: 'CompanyUserManage',
+            component: './Main/CompanyUserManage',
+            hideInMenu:'true'
+          },
+          {
+            path: '/Main/Intrusment',
+            name: 'Intrusment',
+            component: './Main/Intrusment',
+            hideInMenu:'true'
+          },
+          {
+            path: '/Main/CompanyInfo',
+            name: 'CompanyInfo',
+            component: './Main/CompanyInfo',
+            hideInMenu:'true'
+          },
+
+
         ],
       },
       {

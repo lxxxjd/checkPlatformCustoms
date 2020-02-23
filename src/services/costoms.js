@@ -178,6 +178,17 @@ export async function addReadRecord(params) {
   });
 }
 
+export async function getPreCustomReceiveListByCustomsName(params) {
+  return request(`/api/PreCustomReceive/getPreCustomReceiveListByCustomsName`,{
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
+
+
+
 
 
 

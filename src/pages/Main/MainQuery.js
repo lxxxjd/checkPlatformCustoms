@@ -18,6 +18,7 @@ import {
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import queryStyles from './MainQuery.less'
 import styles from '../table.less';
+import areaOptions from './areaOptions';
 
 const { Header, Footer, Sider, Content } = Layout;
 const { TreeNode } = Tree;
@@ -57,6 +58,7 @@ const CertForm = Form.create()(props => {
       title="审阅"
       visible={showVisible}
       onCancel={showCancel}
+      destroyOnClose={()=>{return true}}
       footer={[
         <div>
           {reportDetail.approvemanUserName===null?
@@ -89,7 +91,7 @@ const CertForm = Form.create()(props => {
         </div>
       ]}
       style={{ top: 10 }}
-      width={document.body.clientWidth*0.9}
+      width={document.body.clientWidth*0.95}
       height={document.body.clientHeight*0.6}
     >
       <Layout>
@@ -102,8 +104,8 @@ const CertForm = Form.create()(props => {
             </Row>
           </div>
         </Content>
-        <Sider theme='light' width={310} style={{paddingLeft:60}}>
-          <Tree showLine defaultExpandedKeys={['reportDetail']} defaultExpandAll onSelect={onSelect}>{renderTreeNodes(treeData)}</Tree>
+        <Sider theme='light' width={400} style={{paddingLeft:60}}>
+          <Tree showLine defaultSelectedKeys={[value]} defaultExpandAll onSelect={onSelect}>{renderTreeNodes(treeData)}</Tree>
         </Sider>
       </Layout>
     </Modal>
@@ -237,7 +239,7 @@ class MainQuery extends PureComponent {
     },
     {
       title: '审阅人',
-      dataIndex: 'approvemanUserName',
+      dataIndex: 'approveManNameC',
     },
     {
       title: '审阅日期',
@@ -248,10 +250,8 @@ class MainQuery extends PureComponent {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.peopleItem(text, record)}>人员</a>
-          &nbsp;&nbsp;
-          <a onClick={() => this.approveItem(text, record)}>审批</a>
-          &nbsp;&nbsp;
+          <a onClick={() => this.peopleItem(text, record)}>人员</a>&nbsp;&nbsp;
+          {text.overallstate==="已发布"?[<a onClick={() => this.approveItem(text, record)}>审批&nbsp;&nbsp;</a>]:[<span>审批&nbsp;&nbsp;</span>]}
           <a onClick={() => this.previewItem(text, record)}>委托详情</a>
         </Fragment>
       ),
@@ -267,7 +267,9 @@ class MainQuery extends PureComponent {
   // eslint-disable-next-line react/sort-comp
   init =() =>{
     const { dispatch } = this.props;
+    const user = JSON.parse(localStorage.getItem("userinfo"));
     const params = {
+      customsCompany:user.company,
     };
     dispatch({
       type: 'main/getReportByCustoms',
@@ -310,6 +312,7 @@ class MainQuery extends PureComponent {
           this.state.treeData.push(response2);
           this.setState({showVisible:true});
           // eslint-disable-next-line react/no-unused-state
+          this.setState({value: "reportDetail"});
           this.setState({text});
           this.setState({loadingState:false});
         }
@@ -320,20 +323,18 @@ class MainQuery extends PureComponent {
   };
 
   peopleItem = text =>{
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'main/getAllMan',
-      payload: {
-        reportno:text.reportno,
-        certcode:text.certcode,
-      },
-      callback:response =>{
-        if (response.code === 200) {
-          this.setState({man:response.data});
-        }
-      }
+
+    sessionStorage.setItem('usermanage_reportno',text.reportno);
+    sessionStorage.setItem('usermanage_certcode',text.certcode);
+    router.push({
+      pathname:'/Main/UserManage',
     });
-    this.setState({peopleVisible:true});
+
+
+
+    //this.setState({peopleVisible:true});
+
+
   };
 
   handleFormReset = () => {
@@ -379,10 +380,12 @@ class MainQuery extends PureComponent {
           mconditions.push(condition);
         }
       }
+      const user = JSON.parse(localStorage.getItem("userinfo"));
       const params = {
         kinds :mkinds,
         values: mvalues,
         conditions:mconditions,
+        customsCompany:user.company,
       };
       dispatch({
         type: 'main/getReportByCustoms',
@@ -598,12 +601,24 @@ class MainQuery extends PureComponent {
   };
 
 
+  getPlaceFromCode =(val)=>{
+    const onelevel = `${val.substring(0,2)}0000`;
+    const twolevel = `${val.substring(0,4)}00`;
+    const threelevel = val;
+    const oneitem = areaOptions.find(item => item.value === onelevel );
+    if(oneitem===undefined){
+      return <span>{threelevel}</span>;
+    }
+    const twoitem = oneitem.children.find(item => item.value === twolevel );
+    const threeitem = twoitem.children.find(item => item.value === threelevel );
+    return <span>{oneitem.label }/{  twoitem.label}/{   threeitem.label}</span>;
+  };
 
 
   renderReportForm() {
     const {reportDetail} = this.state;
     return (
-      <div style={{width:'100%',height:document.body.clientHeight*0.8,backgroundColor:'white',padding:10}}>
+      <div style={{width:'100%',height:document.body.clientHeight*1.2,backgroundColor:'white',padding:10}}>
         <Descriptions style={{ marginBottom: 10 }} size='small' title="业务信息" bordered column={{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }}>
           <Descriptions.Item label="委托编号">{reportDetail.reportno}</Descriptions.Item>
           <Descriptions.Item label="委托日期">{(reportDetail.reportdate===undefined|| reportDetail.reportdate===null)?"": moment(reportDetail.reportdate).format('YYYY-MM-DD')}</Descriptions.Item>
@@ -622,34 +637,42 @@ class MainQuery extends PureComponent {
           <Descriptions.Item label="业务分类">{reportDetail.businesssort}</Descriptions.Item>
         </Descriptions>
         <Descriptions style={{ marginBottom: 10 }} size='small' title="检查对象" bordered column={{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }}>
-          <Descriptions.Item label="检查品名">{reportDetail.cargoname}</Descriptions.Item>
-          <Descriptions.Item label="中文俗名">{reportDetail.chineselocalname}</Descriptions.Item>
+          <Descriptions.Item label="货物名称">{reportDetail.cargoname}</Descriptions.Item>
+          <Descriptions.Item label="俗名">{reportDetail.chineselocalname}</Descriptions.Item>
           <Descriptions.Item label="船名标识">{reportDetail.shipname}</Descriptions.Item>
-          <Descriptions.Item label="申报数量和单位">{((reportDetail.quantityd === undefined || reportDetail.quantityd === null ) ? "":reportDetail.quantityd  )+reportDetail.unit }</Descriptions.Item>
+          <Descriptions.Item label="报检数量">{((reportDetail.quantityd === undefined || reportDetail.quantityd === null ) ? "":reportDetail.quantityd  )+reportDetail.unit }</Descriptions.Item>
           <Descriptions.Item label="检验时间">{(reportDetail.inspdate===undefined|| reportDetail.inspdate===null)?"": moment(reportDetail.inspdate).format('YYYY-MM-DD')}</Descriptions.Item>
-          <Descriptions.Item label="检查港口">{reportDetail.inspplace2}</Descriptions.Item>
-          <Descriptions.Item label="到达地点">{reportDetail.inspplace1}</Descriptions.Item>
+          <Descriptions.Item label="地点">{(reportDetail.inspplace1===undefined||reportDetail.inspplace1===null)?"":this.getPlaceFromCode(reportDetail.inspplace1)}{reportDetail.inspplace2}</Descriptions.Item>
         </Descriptions>
         <Descriptions style={{ marginBottom: 10 }} size='small' title="检查项目" bordered column={{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }}>
-          <Descriptions.Item label="申请项目">{reportDetail.inspway}</Descriptions.Item>
-          <Descriptions.Item label="检验备注">{reportDetail.inspwaymemo1}</Descriptions.Item>
+          <Descriptions.Item span={3} label="申请项目">{reportDetail.inspway}</Descriptions.Item>
+          <Descriptions.Item span={3} label="检验备注">{reportDetail.inspwaymemo1}</Descriptions.Item>
         </Descriptions>
       </div>
     );
   }
 
+  // 处理操作时间
+  handleDate = (val) => {
+    if(val!==undefined && val!==null){
+      return  <span>{ moment(val).format('YYYY-MM-DD')}</span>;
+    }
+    return null;
+  };
+
   renderCheckForm() {
     const {checkData} = this.state;
     return (
-      <div style={{width:'100%',height:document.body.clientHeight*0.8,backgroundColor:'white',padding:10}}>
+      <div style={{width:'100%',height:document.body.clientHeight*1.2,backgroundColor:'white',padding:10}}>
         <Descriptions style={{ marginBottom: 10 }} size='small' title="现场检查" bordered column={{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }}>
-          <Descriptions.Item label="检查项目">{checkData.inspway}</Descriptions.Item>
-          <Descriptions.Item label="开始日期">{(checkData.begindate===undefined|| checkData.begindate===null)?"":moment(checkData.begindate).format('YYYY-MM-DD')}</Descriptions.Item>
-          <Descriptions.Item label="结束日期">{(checkData.finishdate===undefined|| checkData.finishdate===null)?"":moment(checkData.finishdate).format('YYYY-MM-DD')}</Descriptions.Item>
+          <Descriptions.Item label="检验项目">{checkData.inspway}</Descriptions.Item>
+          <Descriptions.Item label="开始日期">{this.handleDate(checkData.begindate)}</Descriptions.Item>
+          <Descriptions.Item label="结束日期">{this.handleDate(checkData.finishdate)}</Descriptions.Item>
           <Descriptions.Item label="重量">{checkData.weight}</Descriptions.Item>
-          <Descriptions.Item label="标准">{checkData.standard}</Descriptions.Item>
-          <Descriptions.Item label="检验员">{checkData.inspman}</Descriptions.Item>
-          <Descriptions.Item label="检验仪器">{checkData.instrument}</Descriptions.Item>
+          <Descriptions.Item label="人员" span={2}>{checkData.inspman}</Descriptions.Item>
+          <Descriptions.Item label="仪器" span={3}><div style={{"white-space":"pre"}}>{checkData.instrument}</div></Descriptions.Item>
+          <Descriptions.Item label="检验标准" span={3}><div style={{"white-space":"pre"}}>{checkData.standard}</div></Descriptions.Item>
+          <Descriptions.Item label="结果描述" span={3}>{checkData.result}</Descriptions.Item>
         </Descriptions>
       </div>
     );
@@ -660,8 +683,8 @@ class MainQuery extends PureComponent {
   renderLinkFileForm (){
     const  {urls}  = this.state;
     return (
-      <div style={{width:'100%',height:document.body.clientHeight*0.8,backgroundColor:'white',padding:10}}>
-        <embed runat="server" src={urls} style={{width:'100%', height:document.body.clientHeight*0.8}} type="application/pdf" />
+      <div style={{width:'100%',height:document.body.clientHeight*1.2,backgroundColor:'white',padding:10}}>
+        <embed runat="server" src={urls} style={{width:'100%', height:document.body.clientHeight*1.15}} type="application/pdf" />
       </div>
     );
   }
@@ -673,14 +696,14 @@ class MainQuery extends PureComponent {
     const {renderFormData,renderFormColumns} = this.state;
     const {loading} = this.props;
     return (
-      <div style={{width:'100%',height:document.body.clientHeight*0.8,backgroundColor:'white',padding:10}}>
+      <div style={{width:'100%',height:document.body.clientHeight*1.35,backgroundColor:'white',padding:10}}>
         <Table
           size="middle"
           dataSource={renderFormData}
           columns={renderFormColumns}
           rowKey="keyno"
           loading={loading}
-          pagination={{showQuickJumper:true,showSizeChanger:true}}
+          pagination={{showQuickJumper:true,showSizeChanger:true,pageSize: 20}}
         />
       </div>
     );

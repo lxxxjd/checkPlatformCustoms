@@ -17,6 +17,11 @@ export async function getRepeatUsername(params) {
   return request(`/api/customsuser/getRepeatUsername?username=${params.username}`);
 }
 
+export async function getUserByCertCodeAndName(params) {
+  return request(`/api/user/getUserByCertCodeAndName?certCode=${params.certCode}&nameC=${params.nameC}`);
+}
+
+
 
 // 发送验证码
 export async function sendVerify(params) {

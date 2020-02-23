@@ -1,5 +1,9 @@
 import { getAllMan, getReportByCustoms, getAllReadRecords, getRecordInfo, queryReport, getRecord,addReadRecordByCustoms,returnReadRecordByCustoms} from '@/services/Main';
-import {addReadRecord}  from '@/services/costoms';
+import {addReadRecord,getPreCustomReceiveListByCustomsName}  from '@/services/costoms';
+import {getAllUserListByCertCode} from '@/services/Certificate'
+import { getInstrument} from '@/services/Intrusment';
+
+
 
 
 export default {
@@ -19,10 +23,31 @@ export default {
 
   effects: {
 
+
+    *getAllUserListByCertCode({ payload,callback }, { call, put }) {
+      const response = yield call(getAllUserListByCertCode, payload);
+      if (callback) callback(response);
+    },
+
+    *getInstrumentList({ payload,callback }, { call, put }) {
+      const response = yield call(getInstrument, payload);
+      yield put({
+        type: 'getInstrumentResult',
+        payload: response,
+      });
+      if (callback) callback(response.data);
+    },
+
     *addReadRecord({ payload,callback }, { call, put }) {
       const response = yield call(addReadRecord, payload);
       if (callback) callback(response.data);
     },
+
+    *getPreCustomReceiveListByCustomsName({ payload,callback }, { call, put }) {
+      const response = yield call(getPreCustomReceiveListByCustomsName, payload);
+      if (callback) callback(response);
+    },
+
 
 
     // 海关审阅
