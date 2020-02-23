@@ -38,6 +38,7 @@ export default {
   'menu.Main.PreCustomsReceive':'备案审查',
   'menu.Main.Intrusment':'仪器设备',
   'menu.Main.CompanyInfo':'公司信息',
+  'menu.Main.CustomsUser':'用户管理',
 
   'menu.dashboard': 'Dashboard',
   'menu.dashboard.analysis': '分析页',

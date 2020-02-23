@@ -86,6 +86,13 @@ export default [
             hideInMenu:'true'
           },
 
+          {
+            path: '/Main/CustomsUser',
+            name: 'CustomsUser',
+            component: './Main/CustomsUser',
+          },
+
+
 
         ],
       },
