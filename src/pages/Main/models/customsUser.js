@@ -1,4 +1,4 @@
-import {getCustomsUsers,updateCustomsUser,addCustomsUser,deleteCustomsUser,getRepeatUsername,getCustomsNameStringByCustomName,getCustomsUserListByCustomName} from '@/services/CustomsUser';
+import {resetPassword,getCustomsUsers,updateCustomsUser,addCustomsUser,deleteCustomsUser,getRepeatUsername,getCustomsNameStringByCustomName,getCustomsUserListByCustomName} from '@/services/CustomsUser';
 
 export default {
   namespace: 'CustomsUser',
@@ -20,6 +20,12 @@ export default {
       const response = yield call(getRepeatUsername, payload);
       if (callback) callback(response.data);
     },
+
+    *resetPassword({ payload,callback }, { call, put }) {
+      const response = yield call(resetPassword, payload);
+      if (callback) callback(response.data);
+    },
+
 
 
     *getCustomsUserList({ payload,callback }, { call, put }) {

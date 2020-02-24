@@ -39,6 +39,10 @@ export default {
   'menu.Main.Intrusment':'仪器设备',
   'menu.Main.CompanyInfo':'公司信息',
   'menu.Main.CustomsUser':'用户管理',
+  'menu.Main.CustomsReceive':'已备案机构',
+
+  'menu.Personal.UserInfo':'密码修改',
+  'menu.Personal':'个人设置',
 
   'menu.dashboard': 'Dashboard',
   'menu.dashboard.analysis': '分析页',

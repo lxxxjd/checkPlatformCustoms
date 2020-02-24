@@ -92,10 +92,28 @@ export default [
             component: './Main/CustomsUser',
           },
 
+          {
+            path: '/Main/CustomsReceive',
+            name: 'CustomsReceive',
+            component: './Main/CustomsReceive',
+          },
+        ],
+      },
 
+      {
+        path: '/Personal',
+        icon: 'profile',
+        name: 'Personal',
+        routes: [
+          {
+            path: '/Personal/UserInfo',
+            name: 'UserInfo',
+            component: './Main/UserInfo',
+          },
 
         ],
       },
+
       {
         component: '404',
       },

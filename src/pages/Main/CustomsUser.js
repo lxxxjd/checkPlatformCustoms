@@ -60,17 +60,17 @@ const CreateForm = Form.create()(props => {
         })(<Input placeholder="请输入用户名" disabled />)}
       </FormItem>
 
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="密码">
-        {form.getFieldDecorator('password', {
-          initialValue: modalInfo.password,
-          rules: [
-            {
-              required: true,
-              message: "请输入密码",
-            },
-          ],
-        })(<Input placeholder="请输入密码" />)}
-      </FormItem>
+      {/*<FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="密码">*/}
+      {/*  {form.getFieldDecorator('password', {*/}
+      {/*    initialValue: modalInfo.password,*/}
+      {/*    rules: [*/}
+      {/*      {*/}
+      {/*        required: true,*/}
+      {/*        message: "请输入密码",*/}
+      {/*      },*/}
+      {/*    ],*/}
+      {/*  })(<Input placeholder="请输入密码" />)}*/}
+      {/*</FormItem>*/}
 
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="手机">
         {form.getFieldDecorator('tel', {
@@ -240,16 +240,16 @@ const AddForm = Form.create()(props => {
         )}
       </FormItem>
 
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="密码">
-        {form.getFieldDecorator('password', {
-          rules: [
-            {
-              required: true,
-              message: "请输入密码",
-            },
-          ],
-        })(<Input placeholder="请输入密码" />)}
-      </FormItem>
+      {/*<FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="密码">*/}
+      {/*  {form.getFieldDecorator('password', {*/}
+      {/*    rules: [*/}
+      {/*      {*/}
+      {/*        required: true,*/}
+      {/*        message: "请输入密码",*/}
+      {/*      },*/}
+      {/*    ],*/}
+      {/*  })(<Input placeholder="请输入密码" />)}*/}
+      {/*</FormItem>*/}
 
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="姓名">
         {form.getFieldDecorator('nameC', {
@@ -395,12 +395,12 @@ class CustomsUser extends PureComponent {
       title: '姓名',
       dataIndex: 'nameC',
     },
+    // {
+    //   title: '手机可见性',
+    //   dataIndex: 'isvisible',
+    // },
     {
-      title: '手机可见性',
-      dataIndex: 'isvisible',
-    },
-    {
-      title: '电话',
+      title: '联系电话',
       dataIndex: 'tel',
     },
     {
@@ -408,29 +408,29 @@ class CustomsUser extends PureComponent {
       dataIndex: 'company',
     },
 
-    {
-      title: '职务',
-      dataIndex: 'workduty',
-    },
-
+    // {
+    //   title: '职务',
+    //   dataIndex: 'workduty',
+    // },
+    //
     {
       title: '角色',
       dataIndex: 'role',
     },
-
-
-    {
-      title: '审核状态',
-      dataIndex: 'ispass',
-    },
+    //
+    //
+    // {
+    //   title: '审核状态',
+    //   dataIndex: 'ispass',
+    // },
 
 
     {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.modifyItem(text, record)}>修改</a>
-          &nbsp;&nbsp;
+          <a onClick={() => this.resetPassword(text, record)}>重置密码  &nbsp;&nbsp;</a>
+          <a onClick={() => this.modifyItem(text, record)}>修改  &nbsp;&nbsp;</a>
           <a onClick={() => this.deleteItem(text, record)}>删除</a>
         </Fragment>
       ),
@@ -523,16 +523,48 @@ class CustomsUser extends PureComponent {
     this.handleModalVisible(true);
   };
 
+  resetPassword = text => {
+    const { dispatch } = this.props;
+    const values = {
+      ...text
+    };
+    values.password=values.tel.substring(5,11);
+    console.log(values);
+    Modal.confirm({
+      title: '确定重置密码吗？',
+      okText: '确认',
+      cancelText: '取消',
+      onOk: () => {
+        dispatch({
+          type: 'CustomsUser/resetPassword',
+          payload:values,
+          callback: (response) => {
+            if(response==="success"){
+              message.success("重置成功");
+              this.init();
+            } else {
+              message.success("重置失败");
+            }
+          }
+        });
+      }
+    });
+
+  };
+
+
+
+
   deleteItem = text =>{
+    const { dispatch } = this.props;
+    const values = {
+      ...text
+    };
     Modal.confirm({
       title: '确定删除吗？',
       okText: '确认',
       cancelText: '取消',
       onOk: () => {
-        const { dispatch } = this.props;
-        const values = {
-          ...text
-        };
         dispatch({
           type: 'CustomsUser/deleteCustomsUser',
           payload:values,
@@ -574,7 +606,7 @@ class CustomsUser extends PureComponent {
     const { dispatch } = this.props;
     let prams = modalInfo;
     prams.username =  fields.username;
-    prams.password =  fields.password;
+    // prams.password =  fields.password;
     prams.isvisible =  fields.isvisible;
     prams.tel =  fields.tel;
     prams.company =  fields.company;
@@ -606,6 +638,7 @@ class CustomsUser extends PureComponent {
     const { dispatch } = this.props;
     const values = {
       ...fields,
+      password:fields.tel.substring(5,11),
     };
     this.setState({
       addModalVisible: false,

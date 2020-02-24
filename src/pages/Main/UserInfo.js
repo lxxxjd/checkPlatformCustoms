@@ -118,7 +118,7 @@ class UserInfo extends PureComponent {
 	      }
 	    });
 	};
-	
+
 	modifyPassword = () =>{
 		const {
 	      form,
@@ -374,16 +374,7 @@ class UserInfo extends PureComponent {
 						<span className="ant-form-text">{user.username}</span>
 			        </Form.Item>
 			        <Form.Item label='隶属海关：'>
-		                {getFieldDecorator('company', {
-		                  rules: [
-		                    {
-		                      required: true,
-		                      message: formatMessage({ id: 'validation.company.required' }),
-		                    },
-		                  ],
-		                })(
-		                  <Input size="large" placeholder={formatMessage({ id: 'form.company.placeholder' })} />
-		                )}
+                <span className="ant-form-text">{user.company}</span>
 			          </Form.Item>
 			          <Form.Item label='手机号码：'>
                   <span className="ant-form-text">{user.tel}</span>
@@ -403,7 +394,7 @@ class UserInfo extends PureComponent {
 			                    <Radio value='不可见'>不可见</Radio>
 			                  </Radio.Group>                )}
 			          </Form.Item>
-			    	<Form.Item label='昵称：'>
+			    	<Form.Item label='姓名：'>
 		                {getFieldDecorator('nameC', {
 		                  rules: [
 		                    {
@@ -412,7 +403,7 @@ class UserInfo extends PureComponent {
 		                    },
 		                  ],
 		                })(
-		                  <Input size="large" placeholder={formatMessage({ id: 'form.company.placeholder' })} />
+		                  <Input placeholder={formatMessage({ id: 'form.company.placeholder' })} />
 		                )}
 			         </Form.Item>
 			        <Form.Item wrapperCol={{ span: 12, offset: 6 }}>
@@ -453,7 +444,6 @@ class UserInfo extends PureComponent {
 			                    ],
 			                  })(
 			                    <Input
-			                      size="large"
 			                      type="password"
 			                      placeholder={formatMessage({ id: 'form.password.placeholder' })}
 			                    />
@@ -473,7 +463,6 @@ class UserInfo extends PureComponent {
 			                  ],
 			                })(
 			                  <Input
-			                    size="large"
 			                    type="password"
 			                    placeholder='请输入密码'
 			                  />
@@ -502,7 +491,6 @@ class UserInfo extends PureComponent {
 			                    ],
 			                  })(
 			                    <Input
-			                      size="large"
 			                      style={{ width: '75%' }}
 			                      placeholder={formatMessage({ id: 'form.phone-number.placeholder' })}
 			                    />
@@ -518,13 +506,11 @@ class UserInfo extends PureComponent {
 			                    }]:[],
 			                })(
 			                  <Input
-			                    size="large"
 			                   	style={{ width: '50%' }}
 			                    placeholder={formatMessage({ id: 'form.verification-code.placeholder' })}
 			                  />
 			                )}
 			                <Button
-			                  size="large"
 			                  disabled={count}
 			                  className={styles.getCaptcha}
 			                  onClick={this.onGetCaptcha}

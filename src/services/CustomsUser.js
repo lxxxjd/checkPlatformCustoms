@@ -22,6 +22,15 @@ export async function updateCustomsUser(params) {
     },
   });
 }
+
+export async function resetPassword(params) {
+  return request(`/api/customsuser/updateCustomsUser`,{
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
 export async function addCustomsUser(params) {
   if(params.role!==undefined && params.role!==null){
     params.role = params.role.join(" ");
