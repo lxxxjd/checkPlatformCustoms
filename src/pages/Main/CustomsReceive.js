@@ -107,11 +107,11 @@ class CustomsReceive extends PureComponent {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.modifyItem(text, record)}>修改 &nbsp;&nbsp;</a>
+          {/*<a onClick={() => this.modifyItem(text, record)}>修改 &nbsp;&nbsp;</a>*/}
           <a onClick={() => this.toUserInfo(text, record)}>人员信息 &nbsp;&nbsp;</a>
           <a onClick={() => this.toIntrusment(text, record)}>仪器设备 &nbsp;&nbsp;</a>
           <a onClick={() => this.toCompanyinfo(text, record)}>公司信息 &nbsp;&nbsp;</a>
-          <a onClick={() => this.deleteItem(text, record)}>删除</a>
+          {/*<a onClick={() => this.deleteItem(text, record)}>删除</a>*/}
         </Fragment>
       ),
     },
@@ -131,7 +131,7 @@ class CustomsReceive extends PureComponent {
       customsCompany:user.company
     };
     dispatch({
-      type: 'main/getPreCustomReceiveListByCustomsName',
+      type: 'main/getCustomReceiveListByCustomsName',
       payload: params,
       callback: (response) => {
         if (response){
@@ -159,7 +159,7 @@ class CustomsReceive extends PureComponent {
         customsCompany:user.company
       };
       dispatch({
-        type: 'main/getPreCustomReceiveListByCustomsName',
+        type: 'main/getCustomReceiveListByCustomsName',
         payload: values,
         callback: (response) => {
           if (response){

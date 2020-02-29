@@ -11,8 +11,8 @@ import {
   Input,
   Button,
   Select,
-  Table, message, Modal, DatePicker,
-} from 'antd/lib/index';
+  Table, message, Modal, DatePicker,InputNumber
+} from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import moment from 'moment/moment';
 import styles from '../table.less';
@@ -37,23 +37,23 @@ const CreateForm = Form.create()(props => {
   return (
     <Modal
       destroyOnClose
-      title="业务来源修改"
+      title="接受备案"
       style={{ top: 100 }}
       visible={modalVisible}
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
     >
 
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="业务来源名称">
-        {form.getFieldDecorator('itemname', {
-          initialValue: modalInfo.itemname,
+      <FormItem labelCol={{ span: 10 }} wrapperCol={{ span: 14 }} label="有效年限(年)">
+        {form.getFieldDecorator('validcycle', {
+          initialValue: "1",
           rules: [
             {
               required: true,
-              message: "请输入业务来源名称",
+              message: "请输入有效年限",
             },
           ],
-        })(<Input placeholder="请输入业务来源名称" />)}
+        })(<InputNumber min={1} max={10} />)}
       </FormItem>
 
 
@@ -107,11 +107,11 @@ class PreCustomsReceive extends PureComponent {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.modifyItem(text, record)}>修改 &nbsp;&nbsp;</a>
+          {text.status==="已提交"?[<a onClick={() => this.modifyItem(text, record)}>接受备案&nbsp;&nbsp;</a>]:[]}
+          {text.status==="已提交"?[<a onClick={() => this.refuseItem(text, record)}>拒绝备案&nbsp;&nbsp;</a>]:[]}
           <a onClick={() => this.toUserInfo(text, record)}>人员信息 &nbsp;&nbsp;</a>
           <a onClick={() => this.toIntrusment(text, record)}>仪器设备 &nbsp;&nbsp;</a>
           <a onClick={() => this.toCompanyinfo(text, record)}>公司信息 &nbsp;&nbsp;</a>
-          <a onClick={() => this.deleteItem(text, record)}>删除</a>
         </Fragment>
       ),
     },
@@ -184,6 +184,34 @@ class PreCustomsReceive extends PureComponent {
     this.handleModalVisible(true);
   };
 
+  refuseItem = text => {
+    const { dispatch } = this.props;
+    Modal.confirm({
+      title: '确定要拒绝此备案吗？',
+      okText: '确认',
+      cancelText: '取消',
+      onOk: () => {
+        let prams = text;
+        const values = {
+          ...prams
+        };
+        dispatch({
+          type: 'main/refuseReceive',
+          payload:values,
+          callback: (response) => {
+            if(response==="success"){
+              message.success("拒绝成功");
+              this.init();
+            } else {
+              message.error("拒绝失败");
+            }
+          }
+        });
+      }
+    });
+  };
+
+
   toUserInfo = text => {
     sessionStorage.setItem('companyusermanage_certcode',text.certcode);
     router.push({
@@ -237,22 +265,20 @@ class PreCustomsReceive extends PureComponent {
 
   handleEdit = (fields,modalInfo) => {
     const { dispatch } = this.props;
-    const user = JSON.parse(localStorage.getItem("userinfo"));
     let prams = modalInfo;
-    prams.itemname =  fields.itemname;
+    prams.validcycle =  fields.validcycle;
     const values = {
       ...prams
     };
-    console.log(values);
     dispatch({
-      type: 'main/updateBusinessSource',
+      type: 'main/acceptReceive',
       payload:values,
       callback: (response) => {
         if(response==="success"){
-          message.success("保存成功");
+          message.success("备案成功");
           this.init();
         } else {
-               message.error("保存失败");
+               message.error("备案失败");
         }
       }
     });

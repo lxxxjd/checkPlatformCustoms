@@ -25,7 +25,8 @@ export default [
     component: '../layouts/BasicLayout',
     Routes: ['src/pages/Authorized'],
     routes: [
-      { path: '/', redirect: '/Main/MainQuery',authority: ['admin', 'user']},
+      { path: '/', redirect: '/Main/MainQuery'},
+      { path: '/admin', redirect: '/Main/PreCustomsReceive'},
       {
         path: '/Main',
         icon: 'profile',
@@ -35,6 +36,7 @@ export default [
             path: '/Main/MainQuery',
             name: 'MainQuery',
             component: './Main/MainQuery',
+            authority: ["审查员"],
           },
           {
             path: '/Main/DetailForEnturstment',
@@ -66,6 +68,7 @@ export default [
             path: '/Main/PreCustomsReceive',
             name: 'PreCustomsReceive',
             component: './Main/PreCustomsReceive',
+            authority: ["管理员"],
           },
           {
             path: '/Main/CompanyUserManage',
@@ -90,12 +93,14 @@ export default [
             path: '/Main/CustomsUser',
             name: 'CustomsUser',
             component: './Main/CustomsUser',
+            authority: ["管理员"],
           },
 
           {
             path: '/Main/CustomsReceive',
             name: 'CustomsReceive',
             component: './Main/CustomsReceive',
+            authority: ["审查员"],
           },
         ],
       },

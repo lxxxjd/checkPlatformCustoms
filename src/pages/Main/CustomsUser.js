@@ -118,26 +118,26 @@ const CreateForm = Form.create()(props => {
         )}
       </FormItem>
 
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="职务">
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="职位">
         {form.getFieldDecorator('workduty', {
           initialValue: modalInfo.workduty,
           rules: [
             {
               required: true,
-              message: "职务",
+              message: "职位",
             },
 
           ],
         })(
-          <Select style={{width:'100%'}} placeholder="请选择公司职务">
-            <Option value="总经理">总经理</Option>
-            <Option value="副总经理">副总经理</Option>
-            <Option value="总监">总监</Option>
-            <Option value="经理">经理</Option>
-            <Option value="副经理">副经理</Option>
-            <Option value="产品经理">产品经理</Option>
-            <Option value="主管">主管</Option>
-            <Option value="员工">员工</Option>
+          <Select style={{width:'100%'}} placeholder="请选择公司职位">
+            <Option value="关长">关长</Option>
+            <Option value="副关长">副关长</Option>
+            <Option value="处长">处长</Option>
+            <Option value="副处长">副处长</Option>
+            <Option value="科长">科长</Option>
+            <Option value="副科长">副科长</Option>
+            <Option value="科员">科员</Option>
+            <Option value="办事员">办事员</Option>
           </Select>
         )}
       </FormItem>
@@ -304,25 +304,24 @@ const AddForm = Form.create()(props => {
         )}
       </FormItem>
 
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="职务">
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="职位">
         {form.getFieldDecorator('workduty', {
           rules: [
             {
               required: true,
-              message: "职务",
+              message: "职位",
             },
-
           ],
         })(
-          <Select style={{width:'100%'}} placeholder="请选择公司职务">
-            <Option value="总经理">总经理</Option>
-            <Option value="副总经理">副总经理</Option>
-            <Option value="总监">总监</Option>
-            <Option value="经理">经理</Option>
-            <Option value="副经理">副经理</Option>
-            <Option value="产品经理">产品经理</Option>
-            <Option value="主管">主管</Option>
-            <Option value="员工">员工</Option>
+          <Select style={{width:'100%'}} placeholder="请选择公司职位">
+            <Option value="关长">关长</Option>
+            <Option value="副关长">副关长</Option>
+            <Option value="处长">处长</Option>
+            <Option value="副处长">副处长</Option>
+            <Option value="科长">科长</Option>
+            <Option value="副科长">副科长</Option>
+            <Option value="科员">科员</Option>
+            <Option value="办事员">办事员</Option>
           </Select>
         )}
       </FormItem>
@@ -387,10 +386,10 @@ class CustomsUser extends PureComponent {
       title: '用户名',
       dataIndex: 'username',
     },
-    {
-      title: '密码',
-      dataIndex: 'password',
-    },
+    // {
+    //   title: '密码',
+    //   dataIndex: 'password',
+    // },
     {
       title: '姓名',
       dataIndex: 'nameC',
@@ -409,7 +408,7 @@ class CustomsUser extends PureComponent {
     },
 
     // {
-    //   title: '职务',
+    //   title: '职位',
     //   dataIndex: 'workduty',
     // },
     //
