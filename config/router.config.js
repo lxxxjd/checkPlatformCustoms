@@ -25,8 +25,7 @@ export default [
     component: '../layouts/BasicLayout',
     Routes: ['src/pages/Authorized'],
     routes: [
-      { path: '/', redirect: '/Main/MainQuery'},
-      { path: '/admin', redirect: '/Main/PreCustomsReceive'},
+      { path: '/', redirect: '/Personal/UserInfo'},
       {
         path: '/Main',
         icon: 'profile',
