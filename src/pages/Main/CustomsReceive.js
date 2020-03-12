@@ -82,6 +82,10 @@ class CustomsReceive extends PureComponent {
       dataIndex: 'namec',
     },
     {
+      title: '备案海关名称',
+      dataIndex: 'customsname',
+    },
+    {
       title: '提交日期',
       dataIndex: 'applydate',
       render: val => this.isValidDate(val),

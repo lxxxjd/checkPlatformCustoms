@@ -12,7 +12,7 @@ import {
   Select,
   Table, message, Icon,
   Checkbox,
-  Image, Modal, Descriptions,Switch,Tree, Spin, Alert,Rate,
+  Image, Modal, Descriptions,Switch,Tree, Spin, Alert,Rate,Cascader,
   Layout,
 } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
@@ -145,13 +145,15 @@ class MainQuery extends PureComponent {
     // 加载中
     loadingState: false,
 
-
+    kindValue:"customsNo",
     // 审阅部分
     showVisible: false,
     urls: "", // 切换pdf的url
     value: 'reportDetail', // 切换tab拟制页面
+
     checkData: {},   // 现场检查信息
     reportDetail: {},  // 当前委托详情
+    company:[],
     treeData: [],
     renderFormData: [], // 当前data
     renderFormColumns: [],// 当前表格的信息
@@ -204,17 +206,18 @@ class MainQuery extends PureComponent {
 
   columns = [
     {
-      title: '委托编号',
-      dataIndex: 'reportno',
-    },
-    {
       title: '委托日期',
       dataIndex: 'reportdate',
       render: val => this.isValidDate(val),
     },
     {
+      title: '报关号',
+      dataIndex: 'customsNo',
+    },
+    {
       title: '检验机构',
-      dataIndex: 'applicant',
+      dataIndex: 'namec',
+      width:'18%'
     },
     {
       title: '检查品名',
@@ -251,7 +254,7 @@ class MainQuery extends PureComponent {
       render: (text, record) => (
         <Fragment>
           <a onClick={() => this.peopleItem(text, record)}>人员</a>&nbsp;&nbsp;
-          {text.overallstate==="已发布"?[<a onClick={() => this.approveItem(text, record)}>审批&nbsp;&nbsp;</a>]:[<span>审批&nbsp;&nbsp;</span>]}
+          {text.overallstate==="已发布"?[<a onClick={() => this.approveItem(text, record)}>审阅&nbsp;&nbsp;</a>]:[<span>审阅&nbsp;&nbsp;</span>]}
           <a onClick={() => this.previewItem(text, record)}>委托详情</a>
         </Fragment>
       ),
@@ -261,6 +264,16 @@ class MainQuery extends PureComponent {
 
   componentDidMount() {
     this.init();
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'main/getCompanyList',
+      payload: {
+        // certCode: user.certCode,
+      },
+      callback: (response) => {
+        this.setState({company : response.data})
+      }
+    });
   }
 
 
@@ -340,6 +353,7 @@ class MainQuery extends PureComponent {
   handleFormReset = () => {
     const { form } = this.props;
     form.resetFields();
+    this.setState({kindValue:"customsNo"});
     this.init();
     this.flag = 0;
 
@@ -352,6 +366,7 @@ class MainQuery extends PureComponent {
   handleSearch = e => {
     e.preventDefault();
     const { dispatch, form } = this.props;
+    const {kindValue} = this.state;
     form.validateFields((err, fieldsValue) => {
       if (err){
         console.log(err);
@@ -360,16 +375,20 @@ class MainQuery extends PureComponent {
       let mkinds=[];
       let mvalues=[];
       let mconditions=[];
-
       if( fieldsValue.check ===true && fieldsValue.kind !==undefined &&fieldsValue.value !==undefined &&fieldsValue.condition !== undefined ){
+        let value;
+        if(kindValue==="inspplace1"  && fieldsValue.value.length!==0){
+          value = fieldsValue.value[2];
+        }else{
+          value=fieldsValue.value.trim();
+        }
         mkinds.push(fieldsValue.kind );
-        mvalues.push(fieldsValue.value);
+        mvalues.push(value);
         mconditions.push(fieldsValue.condition );
       }
       const keys = form.getFieldValue('keys');
       for(let key in keys){
         let k = keys[key];
-        console.log(k);
         const kind = form.getFieldValue(`kinds${k}`);
         const condition = form.getFieldValue(`conditions${k}`);
         const value = form.getFieldValue(`values${k}`);
@@ -417,6 +436,8 @@ class MainQuery extends PureComponent {
     const {
       form: { getFieldDecorator },
     } = this.props;
+    const {kindValue,company} = this.state;
+    const companyOptions = company.map(d =><Option key={d.certcode} value={d.certcode}>{d.namec}</Option>);
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 6, lg: 18, xl: 5 }}>
@@ -444,10 +465,17 @@ class MainQuery extends PureComponent {
                 initialValue:"customsNo",
                 rules: [{  message: '选择字段' }],
               })(
-                <Select placeholder="选择字段">
+                <Select placeholder="选择字段" onChange={this.onChangeKind}>
                   <Option value="reportno"> 委托编号</Option>
                   <Option value="shipname">船名标识</Option>
                   <Option value="customsNo">报关号</Option>
+                  <Option value="maininfo.certCode">检验机构</Option>
+                  <Option value="applicant">收发货人</Option>
+                  <Option value="agent">代理人</Option>
+                  <Option value="inspplace1">检验地区</Option>
+                  <Option value="inspplace2">详细地点</Option>
+                  <Option value="cargoname">货物名称</Option>
+
                 </Select>
               )}
             </Form.Item>
@@ -472,11 +500,38 @@ class MainQuery extends PureComponent {
               )}
             </Form.Item>
           </Col>
-          <Col md={4} sm={20}>
-            <FormItem>
-              {getFieldDecorator('value',{rules: [{ message: '请输入' }],})(<Input placeholder="请输入" />)}
-            </FormItem>
-          </Col>
+          {kindValue === "maininfo.certCode" ?
+          [
+            <Col md={8} sm={20}>
+              <FormItem>
+                {getFieldDecorator('value', { rules: [{ message: '搜索数据' }], })(
+                  <Select placeholder="请选择检验机构">
+                    {companyOptions}
+                  </Select>
+                )}
+              </FormItem>
+            </Col>
+          ]:[]}
+          {kindValue === "inspplace1" ?
+            [
+              <Col md={4} sm={20}>
+                <FormItem>
+                  {getFieldDecorator('value',)(<Cascader options={areaOptions} placeholder="请选择所属地区" />)}
+                </FormItem>
+
+              </Col>
+            ]:[]}
+
+          {kindValue !== "inspplace1" && kindValue !== "maininfo.certCode" ?
+            [
+              <Col md={4} sm={20}>
+                <FormItem>
+                  {getFieldDecorator('value',{rules: [{ message: '请输入' }],})(<Input placeholder="请输入" />)}
+                </FormItem>
+              </Col>
+            ]:[]}
+
+
           <Col md={1} sm={20}>  <Icon type="plus-circle" style={{fontSize:24, marginLeft: 8 ,marginTop:4}} theme='twoTone' twoToneColor="#00ff00" onClick={this.add} /></Col>
 
           <Col md={8} sm={20}>
@@ -591,6 +646,20 @@ class MainQuery extends PureComponent {
         }
       });
       this.setState({ value: selectedKeys[0] });
+    }else if(selectedKeys[0].indexOf("abandon")  === 0){   // 证书
+      console.log( selectedKeys[0]);
+      const key = selectedKeys[0].substring(7);
+      dispatch({
+        type: 'certificate/getPdfByOssPath',
+        payload:{osspath:key},
+        callback: (response) => {
+          if (response) {
+            this.state.urls = response.data;
+            this.forceUpdate();
+          }
+        }
+      });
+      this.setState({ value: selectedKeys[0] });
     }
     return null;
   };
@@ -598,6 +667,10 @@ class MainQuery extends PureComponent {
 
   showCancel = () =>{
     this.setState({showVisible:false});
+  };
+
+  onChangeKind =(value) =>{
+    this.setState({kindValue:value});
   };
 
 
@@ -733,7 +806,10 @@ class MainQuery extends PureComponent {
       return this.renderLinkFileForm();
     }else if(value.indexOf("certpdf")  === 0) {  // 已经盖章的证书
       return this.renderLinkFileForm();
-    }else{
+    }else if(value.indexOf("abandon")  === 0) {  // 已经盖章的证书
+      return this.renderLinkFileForm();
+    }
+    else{
       return null;
     }
   };
@@ -856,7 +932,11 @@ class MainQuery extends PureComponent {
               <Select placeholder="选择字段">
                 <Option value="reportno"> 委托编号</Option>
                 <Option value="shipname">船名标识</Option>
-                <Option value="cargoname">检查品名</Option>
+                <Option value="customsNo">报关号</Option>
+                <Option value="applicant">收发货人</Option>
+                <Option value="agent">代理人</Option>
+                <Option value="inspplace2">详细地点</Option>
+                <Option value="cargoname">货物名称</Option>
               </Select>
             )}
           </Form.Item>

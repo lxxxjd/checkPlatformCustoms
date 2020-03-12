@@ -23,6 +23,16 @@ export async function getRecord(params) {
   return request(`/api/recordinfo/get_record?recordname=${params.recordname}&reportno=${params.reportno}&source=${params.source}`);
 }
 
+export async function getCompanyList(params) {
+  return request(`/api/company/getCompanyList`,{
+    method: 'POST',
+    data: {
+      ...params,
+      method: 'post',
+    },
+  });
+}
+
 
 // post请求 注意 ` 这个符号 不是这种 ’号
 export async function getReportByCustoms(params) {

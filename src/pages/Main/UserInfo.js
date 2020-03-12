@@ -50,6 +50,61 @@ const passwordProgressMap = {
   poor: 'exception',
 };
 
+
+const OldPassWordForm = Form.create()(props => {
+  const { form, handleOld, handleOldPasswordVisible,OldPasswordVisible } = props;
+  const okHandle = () => {
+    form.validateFields((err, fieldsValue) => {
+      if (err) return;
+      form.resetFields();
+      handleOld(fieldsValue);
+    });
+  };
+
+  const checkConfirm = (rule, value, callback) => {
+    if (value && value !== form.getFieldValue('oldpassword')) {
+      callback('密码不一致');
+    } else {
+      callback();
+    }
+  };
+
+  return (
+    <Modal
+      title="确认原密码"
+      style={{ top: 100 }}
+      visible={OldPasswordVisible}
+      onOk={okHandle}
+      onCancel={() => handleOldPasswordVisible()}
+    >
+      <Form.Item labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="原密码">
+        {form.getFieldDecorator('oldpassword', {
+          rules: [
+            {
+              required: true,
+              message: "请输入原密码",
+            },
+          ],
+        })(<Input placeholder="请输入原密码" type="password" />)}
+      </Form.Item>
+
+      <Form.Item labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="确认原密码">
+        {form.getFieldDecorator('oldconfirm', {
+          rules: [
+            {
+              required: true,
+              message: "请再次输入原密码",
+            },
+            {
+              validator: checkConfirm,
+            },
+          ],
+        })(<Input placeholder="请再次输入原密码" type="password" />)}
+      </Form.Item>
+    </Modal>
+  );
+});
+
 @Form.create()
 @connect(({ register, loading }) => ({
   register,
@@ -65,6 +120,7 @@ class UserInfo extends PureComponent {
 		visible: false,
 		passwordVisible:false,
 		phoneVisible:false,
+    OldPasswordVisible:false,
 	};
 	componentDidMount() {
 	    const {
@@ -254,7 +310,7 @@ class UserInfo extends PureComponent {
 	};
 
 	showPassword= () => {
-		this.setState({passwordVisible:true});
+    this.handleOldPasswordVisible(true);
 	};
 
 	handleCancel= () =>{
@@ -262,7 +318,14 @@ class UserInfo extends PureComponent {
 		this.setState({phoneVisible:false});
 	};
 
-	getPasswordStatus = () => {
+  handleOldPasswordVisible = (flag) => {
+    this.setState({
+      OldPasswordVisible: !!flag,
+    });
+  };
+
+
+  getPasswordStatus = () => {
 		const {
 			form
 		} = this.props;
@@ -344,29 +407,45 @@ class UserInfo extends PureComponent {
 		this.setState({phoneVisible:true});
 	};
 
-    renderPasswordProgress = () => {
-	    const { form } = this.props;
-	    const value = form.getFieldValue('password');
-	    const passwordStatus = this.getPasswordStatus();
-	    return value && value.length ? (
-	      <div className={styles[`progress-${passwordStatus}`]}>
-	        <Progress
-	          status={passwordProgressMap[passwordStatus]}
-	          className={styles.progress}
-	          strokeWidth={6}
-	          percent={value.length * 10 > 100 ? 100 : value.length * 10}
-	          showInfo={false}
-	        />
-	      </div>
-	    ) : null;
-	  };
- 	render() {
+  renderPasswordProgress = () => {
+    const { form } = this.props;
+    const value = form.getFieldValue('password');
+    const passwordStatus = this.getPasswordStatus();
+    return value && value.length ? (
+      <div className={styles[`progress-${passwordStatus}`]}>
+        <Progress
+          status={passwordProgressMap[passwordStatus]}
+          className={styles.progress}
+          strokeWidth={6}
+          percent={value.length * 10 > 100 ? 100 : value.length * 10}
+          showInfo={false}
+        />
+      </div>
+    ) : null;
+  };
+
+  handleOld=(fieldValues)=>{
+    const user = JSON.parse(localStorage.getItem("userinfo"));
+    if(fieldValues.oldpassword ===user.password){
+      this.setState({passwordVisible:true});
+    }else{
+      message.error("您的原密码确认错误");
+    }
+    this.handleOldPasswordVisible(false);
+  };
+
+
+  render() {
  		const { getFieldDecorator } = this.props.form;
  		const FormItemLayout = {
 	      labelCol: { span: 6 },
 	      wrapperCol: { span: 14 },
 	    };
-	    const { user ,help,visible, passwordVisible,phoneVisible, count} = this.state;
+	    const { user ,help,visible, passwordVisible,phoneVisible, count,OldPasswordVisible} = this.state;
+      const parentMethods = {
+        handleOldPasswordVisible: this.handleOldPasswordVisible,
+        handleOld:this.handleOld,
+      };
  		return(
  			<Card>
 	 			<Form {...FormItemLayout} >
@@ -416,11 +495,11 @@ class UserInfo extends PureComponent {
 						</Button>
 			        </Form.Item>
 			        <Modal
-			        	title="修改密码"
+			        	title="设置新密码"
           				visible={passwordVisible}
           				onOk={this.modifyPassword}
           				onCancel={this.handleCancel}>
-          				<Form.Item label='密码:' help={help}>
+          				<Form.Item label='新密码:' help={help}>
 			                <Popover
 			                  getPopupContainer={node => node.parentNode}
 			                  content={
@@ -445,17 +524,17 @@ class UserInfo extends PureComponent {
 			                  })(
 			                    <Input
 			                      type="password"
-			                      placeholder={formatMessage({ id: 'form.password.placeholder' })}
+                            placeholder="请输入新密码"
 			                    />
 			                  )}
 			                </Popover>
 				        </Form.Item>
-          				<Form.Item label='确认密码:'>
+          				<Form.Item label='确认新密码:'>
 							{getFieldDecorator('confirm', {
 			                  rules: [
 			                   passwordVisible ?[{
 			                      required: true,
-			                      message: '请输入密码',
+			                      message: '请输入新密码',
 			                    }]:[],
 			                    {
 			                      validator: this.checkConfirm,
@@ -464,7 +543,7 @@ class UserInfo extends PureComponent {
 			                })(
 			                  <Input
 			                    type="password"
-			                    placeholder='请输入密码'
+			                    placeholder='请确认输入新密码'
 			                  />
 			                )}
 				          </Form.Item>
@@ -522,6 +601,7 @@ class UserInfo extends PureComponent {
 				        </Form.Item>
 			        </Modal>
 			    </Form>
+        <OldPassWordForm {...parentMethods} OldPasswordVisible={OldPasswordVisible} />
 		    </Card>
  		);
  	}
