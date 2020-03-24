@@ -35,11 +35,11 @@ export default {
   'menu.Main.UserManage':'相关人员',
   'menu.Main.ManDetail':'人员详情',
   'menu.Main.CompanyUserManage':'人员信息',
-  'menu.Main.PreCustomsReceive':'备案审查',
+  'menu.Main.PreCustomsReceive':'接受设置',
   'menu.Main.Intrusment':'仪器设备',
   'menu.Main.CompanyInfo':'公司信息',
   'menu.Main.CustomsUser':'用户管理',
-  'menu.Main.CustomsReceive':'已备案机构',
+  'menu.Main.CustomsReceive':'已接受机构',
 
   'menu.Personal.UserInfo':'密码修改',
   'menu.Personal':'个人设置',

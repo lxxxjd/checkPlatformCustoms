@@ -12,7 +12,7 @@ import Context from './MenuContext';
 import SiderMenu from '@/components/SiderMenu';
 import getPageTitle from '@/utils/getPageTitle';
 import styles from './BasicLayout.less';
-
+import router from 'umi/router';
 // lazy load SettingDrawer
 const SettingDrawer = React.lazy(() => import('@/components/SettingDrawer'));
 
@@ -44,6 +44,7 @@ const query = {
 };
 
 class BasicLayout extends React.Component {
+
   componentDidMount() {
     const {
       dispatch,
@@ -100,7 +101,7 @@ class BasicLayout extends React.Component {
     return <SettingDrawer />;
   };
 
-  render() {
+  renderSimple(){
     const {
       navTheme,
       layout: PropsLayout,
@@ -114,7 +115,8 @@ class BasicLayout extends React.Component {
 
     const isTop = PropsLayout === 'topmenu';
     const contentStyle = !fixedHeader ? { paddingTop: 0 } : {};
-    const user = JSON.parse(localStorage.getItem("userinfo"));
+    const userJson = localStorage.getItem("userinfo");
+    const user = userJson===undefined?undefined:JSON.parse(userJson);
     const layout = (
       <Layout>
         {isTop && !isMobile ? null : (
@@ -124,8 +126,8 @@ class BasicLayout extends React.Component {
             onCollapse={this.handleMenuCollapse}
             menuData={menuData}
             isMobile={isMobile}
-            username={user.nameC}
-            company={user.company===undefined||user.company===null?"":user.company}
+            username={user===undefined?"":user.nameC}
+            company={user===undefined||user.company===undefined?"":user.company}
             {...this.props}
           />
         )}
@@ -140,8 +142,8 @@ class BasicLayout extends React.Component {
             handleMenuCollapse={this.handleMenuCollapse}
             logo={logo}
             isMobile={isMobile}
-            username={user.nameC}
-            company={user.company===undefined||user.company===null?"":user.company}
+            username={user===undefined?"":user.nameC}
+            company={user===undefined||user.company===undefined?"":user.company}
             {...this.props}
           />
           <Content className={styles.content} style={contentStyle}>
@@ -165,6 +167,11 @@ class BasicLayout extends React.Component {
         <Suspense fallback={null}>{this.renderSettingDrawer()}</Suspense>
       </React.Fragment>
     );
+  };
+
+
+  render() {
+    return this.renderSimple();
   }
 }
 

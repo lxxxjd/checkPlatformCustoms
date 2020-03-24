@@ -101,7 +101,7 @@ class CustomsReceive extends PureComponent {
     },
 
     {
-      title: '状态',
+      title: '已接收',
       dataIndex: 'status',
     },
 

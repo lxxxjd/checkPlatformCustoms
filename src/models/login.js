@@ -63,9 +63,6 @@ export default {
         yield put(
           routerRedux.replace({
             pathname: '/user/login',
-            search: stringify({
-              redirect: window.location.href,
-            }),
           })
         );
         localStorage.setItem("userinfo",undefined);
