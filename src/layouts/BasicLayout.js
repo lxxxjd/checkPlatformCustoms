@@ -115,7 +115,7 @@ class BasicLayout extends React.Component {
 
     const isTop = PropsLayout === 'topmenu';
     const contentStyle = !fixedHeader ? { paddingTop: 0 } : {};
-    const userJson = localStorage.getItem("userinfo");
+    const userJson = localStorage.getItem("customs_userinfo");
     const user = userJson===undefined?undefined:JSON.parse(userJson);
     const layout = (
       <Layout>

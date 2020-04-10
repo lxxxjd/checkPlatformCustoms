@@ -103,7 +103,7 @@ class Main extends PureComponent {
 
 
   componentDidMount() {
-    const user = JSON.parse(localStorage.getItem("userinfo"));
+    const user = JSON.parse(localStorage.getItem("customs_userinfo"));
     const { dispatch } = this.props;
     dispatch({
       type: 'main/getReportByConfigor',
@@ -154,7 +154,7 @@ class Main extends PureComponent {
 
   handleFormReset = () => {
 
-    const user = JSON.parse(localStorage.getItem("userinfo"));
+    const user = JSON.parse(localStorage.getItem("customs_userinfo"));
     const { form,dispatch } = this.props;
     form.resetFields();
     const params = {
@@ -176,7 +176,7 @@ class Main extends PureComponent {
     form.validateFields((err, fieldsValue) => {
       console.log(err);
       if (err) return;
-      const user = JSON.parse(localStorage.getItem("userinfo"));
+      const user = JSON.parse(localStorage.getItem("customs_userinfo"));
       const values = {
         ...fieldsValue,
         consigoruser:user.userName,
@@ -200,7 +200,7 @@ class Main extends PureComponent {
     form.validateFields((err, fieldsValue) => {
       console.log(err);
       if (err) return;
-      const user = JSON.parse(localStorage.getItem("userinfo"));
+      const user = JSON.parse(localStorage.getItem("customs_userinfo"));
       const values = {
         ...fieldsValue,
         consigoruser:user.userName,

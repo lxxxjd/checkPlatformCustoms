@@ -127,7 +127,7 @@ class UserInfo extends PureComponent {
 	    	dispatch ,
 	    	form
 	    } = this.props;
-	    const user = JSON.parse(localStorage.getItem("userinfo"));
+	    const user = JSON.parse(localStorage.getItem("customs_userinfo"));
 	    this.setState({user});
 	    form.setFieldsValue({
 			'company':user.company,
@@ -143,7 +143,7 @@ class UserInfo extends PureComponent {
 	      dispatch,
 	    } = this.props;
 	    const {validateFieldsAndScroll} = form;
-	    let user = JSON.parse(localStorage.getItem("userinfo"));
+	    let user = JSON.parse(localStorage.getItem("customs_userinfo"));
 	    validateFieldsAndScroll((error, values) => {
 	    	console.log(error);
 	      if (!error) {
@@ -181,7 +181,7 @@ class UserInfo extends PureComponent {
 	      dispatch,
 	    } = this.props;
 	    const {validateFieldsAndScroll} = form;
-	    let user = JSON.parse(localStorage.getItem("userinfo"));
+	    let user = JSON.parse(localStorage.getItem("customs_userinfo"));
 	    validateFieldsAndScroll((error, values) => {
 	      if (!error) {
 	        // submit the values
@@ -217,7 +217,7 @@ class UserInfo extends PureComponent {
 	      dispatch,
 	    } = this.props;
 	    const {validateFieldsAndScroll} = form;
-	    let user = JSON.parse(localStorage.getItem("userinfo"));
+	    let user = JSON.parse(localStorage.getItem("customs_userinfo"));
 	    validateFieldsAndScroll((error, values) => {
 	      if (!error) {
 	        // submit the values
@@ -425,7 +425,7 @@ class UserInfo extends PureComponent {
   };
 
   handleOld=(fieldValues)=>{
-    const user = JSON.parse(localStorage.getItem("userinfo"));
+    const user = JSON.parse(localStorage.getItem("customs_userinfo"));
     if(fieldValues.oldpassword ===user.password){
       this.setState({passwordVisible:true});
     }else{

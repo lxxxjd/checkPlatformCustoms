@@ -38,7 +38,7 @@ export default {
           }
         }
         yield put(routerRedux.replace(redirect || '/'));
-        localStorage.setItem("userinfo",JSON.stringify(response.user));
+        localStorage.setItem("customs_userinfo",JSON.stringify(response.user));
         console.log(response.user);
       }
 
@@ -65,7 +65,7 @@ export default {
             pathname: '/user/login',
           })
         );
-        localStorage.setItem("userinfo",undefined);
+        localStorage.setItem("customs_userinfo",undefined);
       }
     },
   },

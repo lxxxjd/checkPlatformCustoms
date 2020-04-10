@@ -280,7 +280,7 @@ class MainQuery extends PureComponent {
   // eslint-disable-next-line react/sort-comp
   init =() =>{
     const { dispatch } = this.props;
-    const user = JSON.parse(localStorage.getItem("userinfo"));
+    const user = JSON.parse(localStorage.getItem("customs_userinfo"));
     const params = {
       customsCompany:user.company,
     };
@@ -399,7 +399,7 @@ class MainQuery extends PureComponent {
           mconditions.push(condition);
         }
       }
-      const user = JSON.parse(localStorage.getItem("userinfo"));
+      const user = JSON.parse(localStorage.getItem("customs_userinfo"));
       const params = {
         kinds :mkinds,
         values: mvalues,
@@ -820,7 +820,7 @@ class MainQuery extends PureComponent {
     }else{
         // 海关审阅
         const {dispatch} =  this.props;
-        const user = JSON.parse(localStorage.getItem("userinfo"));
+        const user = JSON.parse(localStorage.getItem("customs_userinfo"));
         const {reportDetail} = this.state;
         const params = {
           reader:user.username,
@@ -850,7 +850,7 @@ class MainQuery extends PureComponent {
   returnReport = () =>{
     // 海关审阅
     const {dispatch} =  this.props;
-    const user = JSON.parse(localStorage.getItem("userinfo"));
+    const user = JSON.parse(localStorage.getItem("customs_userinfo"));
     const {reportDetail} = this.state;
     const params = {
       reader:user.username,
@@ -890,7 +890,7 @@ class MainQuery extends PureComponent {
     getFieldDecorator('keys', { initialValue: [] });
     const keys = getFieldValue('keys');
     const { mainResult, peopleVisible,man ,showVisible,value,treeData,loadingState ,reportDetail } = this.state;
-    const user = JSON.parse(localStorage.getItem("userinfo"));
+    const user = JSON.parse(localStorage.getItem("customs_userinfo"));
     const parentMethods = {
       handleModalReviewVisible:this.handleModalReviewVisible,
       showCancel: this.showCancel,

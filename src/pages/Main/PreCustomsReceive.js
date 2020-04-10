@@ -129,7 +129,7 @@ class PreCustomsReceive extends PureComponent {
   }
 
   init =()=>{
-    const user = JSON.parse(localStorage.getItem("userinfo"));
+    const user = JSON.parse(localStorage.getItem("customs_userinfo"));
     const { dispatch } = this.props;
     const params = {
       customsCompany:user.company
@@ -156,7 +156,7 @@ class PreCustomsReceive extends PureComponent {
     const { dispatch, form } = this.props;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
-      const user = JSON.parse(localStorage.getItem("userinfo"));
+      const user = JSON.parse(localStorage.getItem("customs_userinfo"));
       const values = {
         kind :fieldsValue.kind.trim(),
         value: fieldsValue.value.trim(),

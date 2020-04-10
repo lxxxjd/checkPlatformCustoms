@@ -445,7 +445,7 @@ class CustomsUser extends PureComponent {
 
   init =()=>{
     const { dispatch } = this.props;
-    const user = JSON.parse(localStorage.getItem("userinfo"));
+    const user = JSON.parse(localStorage.getItem("customs_userinfo"));
     const params = {
       customsCompany:user.company,
     };
@@ -480,7 +480,7 @@ class CustomsUser extends PureComponent {
   handleSearch = e=> {
     e.preventDefault();
     const { dispatch, form } = this.props;
-    const user = JSON.parse(localStorage.getItem("userinfo"));
+    const user = JSON.parse(localStorage.getItem("customs_userinfo"));
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       const values = {
