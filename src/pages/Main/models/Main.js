@@ -1,4 +1,5 @@
-import { getAllMan, getReportByCustoms, getAllReadRecords, getRecordInfo, queryReport, getRecord,addReadRecordByCustoms,returnReadRecordByCustoms,getCompanyList} from '@/services/Main';
+import { getAllMan, getReportByCustoms, getAllReadRecords, getRecordInfo, queryReport, getRecord,addReadRecordByCustoms,
+  returnReadRecordByCustoms,getCompanyList,selectCheckWeightForCustoms} from '@/services/Main';
 import {addReadRecord,getPreCustomReceiveListByCustomsName,acceptReceive,refuseReceive,getCustomReceiveListByCustomsName,}  from '@/services/costoms';
 import {getAllUserListByCertCode} from '@/services/Certificate'
 import { getInstrument} from '@/services/Intrusment';
@@ -32,6 +33,12 @@ export default {
       const response = yield call(getCompanyList, payload);
       if (callback) callback(response);
     },
+
+    *selectCheckWeightForCustoms({ payload ,callback}, { call, put }) {
+      const response = yield call(selectCheckWeightForCustoms, payload);
+      if (callback) callback(response);
+    },
+
 
     *acceptReceive({ payload,callback }, { call, put }) {
       const response = yield call(acceptReceive, payload);

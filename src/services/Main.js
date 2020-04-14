@@ -23,6 +23,10 @@ export async function getRecord(params) {
   return request(`/api/recordinfo/get_record?recordname=${params.recordname}&reportno=${params.reportno}&source=${params.source}`);
 }
 
+export async function selectCheckWeightForCustoms(params) {
+  return request(`/api/checkweight/selectCheckWeightForCustoms?reportno=${params.reportno}`);
+}
+
 export async function getCompanyList(params) {
   return request(`/api/company/getCompanyList`,{
     method: 'POST',

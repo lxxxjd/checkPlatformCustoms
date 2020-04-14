@@ -12,7 +12,7 @@ import {
   Select,
   Table, message, Icon,
   Checkbox,
-  Image, Modal, Descriptions,Switch,Tree, Spin, Alert,Rate,Cascader,
+  Image, Modal, Descriptions,Switch,Tree, Spin, Alert,Rate,Cascader,Tag,
   Layout,
 } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
@@ -22,7 +22,70 @@ import areaOptions from './areaOptions';
 
 const { Header, Footer, Sider, Content } = Layout;
 const { TreeNode } = Tree;
+const { CheckableTag } = Tag;
 
+
+
+
+
+// 查看框
+const ReviewFrom = (props => {
+  const { modalReviewVisible, handleModalReviewVisible,exceptionData,loading } = props;
+  const columns = [
+    {
+      title: '检查项目',
+      dataIndex: 'inspway',
+    },
+    {
+      title: '参考值',
+      dataIndex: 'quantityd',
+    },
+    {
+      title: '单位',
+      dataIndex: 'unit',
+    },
+    {
+      title: '结果',
+      dataIndex: 'weight',
+    },
+    {
+      title: '差值',
+      dataIndex: 'diff',
+    },
+    {
+      title: '差比(千分比）',
+      dataIndex: 'diffrate',
+    },
+    {
+      title: '状态',
+      dataIndex: 'resultcomment',
+    },
+  ];
+
+  return (
+    <Modal
+      destroyOnClose
+      title="查看异常详情"
+      visible={modalReviewVisible}
+      style={{ top: 100 }}
+      onCancel={() => handleModalReviewVisible()}
+      footer={[
+        <Button type="primary" onClick={() => handleModalReviewVisible()}>
+          关闭
+        </Button>
+      ]}
+    >
+      <Table
+        size="middle"
+        rowKey="reportno"
+        loading={loading}
+        dataSource={exceptionData}
+        pagination={{showQuickJumper:true,showSizeChanger:true}}
+        columns={columns}
+      />
+    </Modal>
+  );
+});
 
 
 
@@ -137,6 +200,7 @@ class MainQuery extends PureComponent {
   state = {
 
     modalReviewVisible:false,
+    exceptionData:[],
     modalInfo :{},
     mainResult:[],
     peopleVisible:false,
@@ -240,15 +304,22 @@ class MainQuery extends PureComponent {
       title: '状态',
       dataIndex: 'overallstate',
     },
+    // {
+    //   title: '审阅人',
+    //   dataIndex: 'approveManNameC',
+    // },
+    // {
+    //   title: '审阅日期',
+    //   dataIndex: 'approvedate',
+    //   render: val => this.isValidDate(val),
+    // },
+
     {
-      title: '审阅人',
-      dataIndex: 'approveManNameC',
+      title: '异常状态',
+      render: (text, record) => this.getExceptionInfo(text),
     },
-    {
-      title: '审阅日期',
-      dataIndex: 'approvedate',
-      render: val => this.isValidDate(val),
-    },
+
+
     {
       title: '操作',
       render: (text, record) => (
@@ -277,6 +348,8 @@ class MainQuery extends PureComponent {
   }
 
 
+
+
   // eslint-disable-next-line react/sort-comp
   init =() =>{
     const { dispatch } = this.props;
@@ -301,10 +374,44 @@ class MainQuery extends PureComponent {
     return [];
   };
 
+  getExceptionInfo =(text)=>{
+    let diff = '';
+    // eslint-disable-next-line camelcase
+    const reportdate = new Date(+new Date(text.reportdate)+8*3600*1000).toISOString().replace(/T/g,' ').replace(/\.[\d]{3}Z/,'');
+    const timestamp2 = Date.parse(new Date(reportdate));
+    const time_diff = new Date().getTime() - timestamp2;
+    // 计算相差天数
+    // eslint-disable-next-line camelcase
+    const days = Math.floor(time_diff / (24 * 3600 * 1000));
+    if (days > 0) {
+      diff += `超${days }天`;
+    }
+    return [
+      <Fragment>
+        {(text.overallstate!=="已发布"&& days > 0)?[<Tag color="orange">{diff}</Tag>]:[]}
+        {(text.exceptioninfo!==null && text.exceptioninfo!=="")?[<Tag color="orange" onClick={this.onTagClick.bind(this,text.reportno)}>{text.exceptioninfo}</Tag>]:[]}
+      </Fragment>
+    ]
+  };
+
   previewItem = text => {
     sessionStorage.setItem('reportno',text.reportno);
     router.push({
       pathname:'/Main/DetailForEnturstment',
+    });
+  };
+
+  onTagClick =(reportno)=>{
+    this.handleModalReviewVisible(true);
+    const{dispatch} = this.props;
+    dispatch({
+      type: 'main/selectCheckWeightForCustoms',
+      payload:{reportno},
+      callback:(response) =>{
+        if(response.code===200){
+          this.setState({exceptionData:response.data});
+        }
+      }
     });
   };
 
@@ -571,9 +678,9 @@ class MainQuery extends PureComponent {
     form.setFieldsValue({
       keys: keys.filter(key => key !== k),
     });
-
-
   };
+
+
 
   add = () => {
     const { form } = this.props;
@@ -889,7 +996,7 @@ class MainQuery extends PureComponent {
     const { getFieldDecorator, getFieldValue } = this.props.form;
     getFieldDecorator('keys', { initialValue: [] });
     const keys = getFieldValue('keys');
-    const { mainResult, peopleVisible,man ,showVisible,value,treeData,loadingState ,reportDetail } = this.state;
+    const { mainResult, peopleVisible,man ,showVisible,value,treeData,loadingState ,reportDetail,modalReviewVisible,exceptionData } = this.state;
     const user = JSON.parse(localStorage.getItem("customs_userinfo"));
     const parentMethods = {
       handleModalReviewVisible:this.handleModalReviewVisible,
@@ -899,6 +1006,7 @@ class MainQuery extends PureComponent {
       returnReport:this.returnReport,
       renderFileInfo:this.renderFileInfo,
       renderTreeNodes:this.renderTreeNodes,
+
     };
 
     const formItems = keys.map((k, index) => (
@@ -1003,6 +1111,7 @@ class MainQuery extends PureComponent {
           </div>
         </Card>
         <CertForm {...parentMethods} loading={loading} showVisible={showVisible} treeData={treeData} value={value} reportDetail={reportDetail} user={user} />
+        <ReviewFrom {...parentMethods} loading={loading} modalReviewVisible={modalReviewVisible} exceptionData={exceptionData} />
         <Modal
           title="人员"
           visible={peopleVisible}
