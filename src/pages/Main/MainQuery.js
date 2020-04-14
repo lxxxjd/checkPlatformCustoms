@@ -92,7 +92,7 @@ const ReviewFrom = (props => {
 
 const CertForm = Form.create()(props => {
 
-  const { form,showVisible,showCancel,value,onSelect,treeData,reviewReport,renderFileInfo,renderTreeNodes,returnReport ,reportDetail,user} = props;
+  const { form,showVisible,showCancel,value,onSelect,treeData,reviewReport,renderFileInfo,renderTreeNodes,returnReport ,reportDetail,user,isValidDate} = props;
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
       if (err){
@@ -133,7 +133,7 @@ const CertForm = Form.create()(props => {
                   rules: [{  required: true, message: '请评分检验质量' }],
                 })(
                   <Rate />
-                  )}
+                )}
                 <span style={{marginRight:20}}>证单质量：</span>
                 {form.getFieldDecorator('approver2', {
                   initialValue:0,
@@ -144,10 +144,12 @@ const CertForm = Form.create()(props => {
                 <Button key="submit2" type="primary" onClick={okHandle}>审阅</Button>
                 <Button key="cancel" type="primary" onClick={showCancel}> 关闭</Button>
               </div>]:[
-                <div>
-                  {user.username ===reportDetail.approvemanUserName?[<Button key="submit3" type="primary" onClick={okHandleReturn}>退回</Button>]:[]}
-                  <Button key="cancel" type="primary" onClick={showCancel}> 关闭</Button>
-                </div>
+              <div>
+                <span style={{marginRight:20,marginLeft:20}}>审阅人：{reportDetail.approveManNameC}</span>
+                <span style={{marginRight:20,marginLeft:20}}>审阅时间：{isValidDate(reportDetail.approvedate)}</span>
+                {user.username ===reportDetail.approvemanUserName?[<Button key="submit3" type="primary" onClick={okHandleReturn}>退回</Button>]:[]}
+                <Button key="cancel" type="primary" onClick={showCancel}> 关闭</Button>
+              </div>
             ]
           }
 
@@ -281,7 +283,7 @@ class MainQuery extends PureComponent {
     {
       title: '检验机构',
       dataIndex: 'namec',
-      width:'18%'
+      width:'16%'
     },
     {
       title: '检查品名',
@@ -294,6 +296,7 @@ class MainQuery extends PureComponent {
     {
       title: '船名标识',
       dataIndex: 'shipname',
+      width:120,
     },
     {
       title: '状态日期',
@@ -317,6 +320,7 @@ class MainQuery extends PureComponent {
     {
       title: '异常状态',
       render: (text, record) => this.getExceptionInfo(text),
+      width:150,
     },
 
 
@@ -361,7 +365,7 @@ class MainQuery extends PureComponent {
       type: 'main/getReportByCustoms',
       payload: params,
       callback: (response) => {
-          this.state.mainResult = response;
+        this.state.mainResult = response;
       }
     });
   };
@@ -416,7 +420,7 @@ class MainQuery extends PureComponent {
   };
 
   approveItem = text =>{
-
+    message.success("正在拉取数据，请稍等几秒...");
     this.setState({loadingState:true});
     const { dispatch } = this.props;
     this.setState({reportDetail:text});
@@ -608,17 +612,17 @@ class MainQuery extends PureComponent {
             </Form.Item>
           </Col>
           {kindValue === "maininfo.certCode" ?
-          [
-            <Col md={8} sm={20}>
-              <FormItem>
-                {getFieldDecorator('value', { rules: [{ message: '搜索数据' }], })(
-                  <Select placeholder="请选择检验机构">
-                    {companyOptions}
-                  </Select>
-                )}
-              </FormItem>
-            </Col>
-          ]:[]}
+            [
+              <Col md={8} sm={20}>
+                <FormItem>
+                  {getFieldDecorator('value', { rules: [{ message: '搜索数据' }], })(
+                    <Select placeholder="请选择检验机构">
+                      {companyOptions}
+                    </Select>
+                  )}
+                </FormItem>
+              </Col>
+            ]:[]}
           {kindValue === "inspplace1" ?
             [
               <Col md={4} sm={20}>
@@ -663,7 +667,7 @@ class MainQuery extends PureComponent {
 
   remove = k => {
     const { form } = this.props;
-       // can use data-binding to get
+    // can use data-binding to get
     const keys = form.getFieldValue('keys');
     // We need at least one passenger
     // if (keys.length === 1) {
@@ -925,30 +929,30 @@ class MainQuery extends PureComponent {
     if(fieldValue.approver1===0 || fieldValue.approver2 ===0){
       message.error("请选择服务评价");
     }else{
-        // 海关审阅
-        const {dispatch} =  this.props;
-        const user = JSON.parse(localStorage.getItem("customs_userinfo"));
-        const {reportDetail} = this.state;
-        const params = {
-          reader:user.username,
-          organization:"海关",
-          company:user.company,
-          reportno:reportDetail.reportno,
-          tel:user.tel,
-          realname:user.nameC,
-        };
-        dispatch({
-          type: 'main/addReadRecordByCustoms',
-          payload:params,
-          callback:(response) =>{
-            if(response==="success"){
-                message.success("审阅成功");
-                this.init();
-            }else{
-              message.success("审阅失败");
-            }
+      // 海关审阅
+      const {dispatch} =  this.props;
+      const user = JSON.parse(localStorage.getItem("customs_userinfo"));
+      const {reportDetail} = this.state;
+      const params = {
+        reader:user.username,
+        organization:"海关",
+        company:user.company,
+        reportno:reportDetail.reportno,
+        tel:user.tel,
+        realname:user.nameC,
+      };
+      dispatch({
+        type: 'main/addReadRecordByCustoms',
+        payload:params,
+        callback:(response) =>{
+          if(response==="success"){
+            message.success("审阅成功");
+            this.init();
+          }else{
+            message.success("审阅失败");
           }
-        });
+        }
+      });
       this.setState({showVisible:false});
     }
   };
@@ -1006,6 +1010,7 @@ class MainQuery extends PureComponent {
       returnReport:this.returnReport,
       renderFileInfo:this.renderFileInfo,
       renderTreeNodes:this.renderTreeNodes,
+      isValidDate:this.isValidDate,
 
     };
 
@@ -1075,7 +1080,7 @@ class MainQuery extends PureComponent {
         <Col md={1} sm={5}>
           {keys.length >= 1 ? (
             <Icon style={{fontSize:24,marginLeft:8}} type="minus-circle" theme='twoTone' twoToneColor="#ff0000" onClick={() => this.remove(k)} />
-              ) : null}
+          ) : null}
         </Col>
       </div>
     ));
