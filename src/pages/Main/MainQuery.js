@@ -393,7 +393,7 @@ class MainQuery extends PureComponent {
     return [
       <Fragment>
         {(text.overallstate!=="已发布"&& days > 0)?[<Tag color="orange">{diff}</Tag>]:[]}
-        {(text.exceptioninfo!==null && text.exceptioninfo!=="")?[<Tag color="orange" onClick={this.onTagClick.bind(this,text.reportno)}>{text.exceptioninfo}</Tag>]:[]}
+        {(text.overallstate==="已发布" && text.exceptioninfo!==null && text.exceptioninfo!=="")?[<Tag color="orange" onClick={this.onTagClick.bind(this,text.reportno)}>{text.exceptioninfo}</Tag>]:[]}
       </Fragment>
     ]
   };
