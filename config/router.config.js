@@ -102,6 +102,13 @@ export default [
             authority: ["管理员"],
           },
 
+          {
+            path: '/Main/Supervision',
+            name: 'Supervision',
+            component: './Main/Supervision',
+            authority: ["审查员","管理员"],
+          },
+
         ],
       },
 

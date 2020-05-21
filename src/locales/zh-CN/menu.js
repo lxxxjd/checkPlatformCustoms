@@ -1,3 +1,4 @@
+import Supervision from '@/pages/Main/Supervision';
 
 
 export default {
@@ -39,6 +40,7 @@ export default {
   'menu.Main.Intrusment':'仪器设备',
   'menu.Main.CompanyInfo':'公司信息',
   'menu.Main.CustomsUser':'用户管理',
+  'menu.Main.Supervision':'配置范围',
   'menu.Main.CustomsReceive':'已接受机构',
 
   'menu.Personal.UserInfo':'密码修改',

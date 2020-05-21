@@ -192,7 +192,7 @@ const getValue = obj =>
   loading: loading.models.main,
 }))
 @Form.create()
-class MainQuery extends PureComponent {
+class Supervision extends PureComponent {
   state = {
 
     modalReviewVisible:false,
@@ -386,7 +386,7 @@ class MainQuery extends PureComponent {
     }
     return [
       <Fragment>
-        {(text.overallstate!=="已发布" && days > 15)?[<Tag color="orange">{diff}</Tag>]:[]}
+        {(days > 15)?[<Tag color="orange">{diff}</Tag>]:[]}
         {(text.overallstate==="已发布" && text.exceptioninfo!==null && text.exceptioninfo!=="")?
           // eslint-disable-next-line react/jsx-no-bind
           [<Tag color="orange" onClick={this.onTagClick.bind(this,text.reportno)}>{text.exceptioninfo}</Tag>]:[]}
@@ -1133,4 +1133,4 @@ class MainQuery extends PureComponent {
   }
 }
 
-export default MainQuery;
+export default Supervision;
