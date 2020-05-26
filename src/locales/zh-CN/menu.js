@@ -42,6 +42,8 @@ export default {
   'menu.Main.CustomsUser':'用户管理',
   'menu.Main.Supervision':'配置范围',
   'menu.Main.CustomsReceive':'已接受机构',
+  'menu.Main.CustomsReceiveForSamples':'样品指标',
+  'menu.Main.SampleIndex':'样品指标',
 
   'menu.Personal.UserInfo':'密码修改',
   'menu.Personal':'个人设置',
