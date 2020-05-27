@@ -111,6 +111,36 @@ export default [
 
 
 
+
+          {
+            //检验机构for样品指标
+            path: '/Main/CustomsReceiveForSamples',
+            name: 'CustomsReceiveForSamples',
+            component: './Main/CustomsReceiveForSamples',
+          },
+          {
+            //样品指标
+            path: '/Main/SampleIndex',
+            name: 'SampleIndex',
+            component: './Main/SampleIndex',
+            hideInMenu: 'true',//添加页不需要在menu上显示
+          },
+          {
+            //样品指标 指标按钮
+            path: '/Main/SampleModify',
+            name: 'SampleModify',
+            component: './Main/SampleModify',
+            hideInMenu: 'true',//添加页不需要在menu上显示
+            // authority: ["总经理","业务副总","实验室主任","业务经理","客服人员"],
+          },
+
+          {
+            path: '/Main/SampleDetail',
+            name: 'SampleDetail',
+            component: './Main/SampleDetail',
+            hideInMenu: 'true',//添加页不需要在menu上显示
+          },
+
         ],
       },
 
