@@ -39,6 +39,13 @@ export default [
           },
 
           {
+            path: '/Main/Supervision',
+            name: 'Supervision',
+            component: './Main/Supervision',
+            authority: ["管理员"],
+          },
+
+          {
             path: '/Main/CustomsReceive',
             name: 'CustomsReceive',
             component: './Main/CustomsReceive',
@@ -102,12 +109,7 @@ export default [
             authority: ["管理员"],
           },
 
-          {
-            path: '/Main/Supervision',
-            name: 'Supervision',
-            component: './Main/Supervision',
-            authority: ["审查员","管理员"],
-          },
+
 
         ],
       },

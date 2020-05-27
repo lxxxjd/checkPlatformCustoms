@@ -31,6 +31,7 @@ export default {
 
   'menu.Main':'我的工作',
   'menu.Main.MainQuery':'我要审阅',
+  'menu.Main.Supervision':'我要监管',
   'menu.Main.DetailForEnturstment':'委托详情',
   'menu.Main.UserInfo':'委托详情',
   'menu.Main.UserManage':'相关人员',
@@ -40,9 +41,7 @@ export default {
   'menu.Main.Intrusment':'仪器设备',
   'menu.Main.CompanyInfo':'公司信息',
   'menu.Main.CustomsUser':'用户管理',
-  'menu.Main.Supervision':'配置范围',
   'menu.Main.CustomsReceive':'已接受机构',
-
   'menu.Personal.UserInfo':'密码修改',
   'menu.Personal':'个人设置',
 
