@@ -11,6 +11,7 @@ import {
 const FormItem = Form.Item;
 const { Option } = Select;
 import styles from './Search.less';
+import router from 'umi/router';
 
 
 
@@ -61,6 +62,10 @@ class Search  extends PureComponent {
 	    });
   	};
 
+  	back =()=>{
+      router.push('/Main/Supervision');
+    }
+
 	 render() {
 		const {
 	      form: { getFieldDecorator },
@@ -104,6 +109,9 @@ class Search  extends PureComponent {
 	              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
 	                重置
 	              </Button>
+                <Button type="primary" style={{ marginLeft: 8 }} onClick={this.back}>
+                  返回
+                </Button>
 	            </span>
 	          </Col>
 	        </Row>

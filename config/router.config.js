@@ -109,15 +109,12 @@ export default [
             authority: ["管理员"],
           },
 
-
-
-
-          {
-            //检验机构for样品指标
-            path: '/Main/CustomsReceiveForSamples',
-            name: 'CustomsReceiveForSamples',
-            component: './Main/CustomsReceiveForSamples',
-          },
+          // {
+          //   //检验机构for样品指标
+          //   path: '/Main/CustomsReceiveForSamples',
+          //   name: 'CustomsReceiveForSamples',
+          //   component: './Main/CustomsReceiveForSamples',
+          // },
           {
             //样品指标
             path: '/Main/SampleIndex',

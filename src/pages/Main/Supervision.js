@@ -444,19 +444,11 @@ class Supervision extends PureComponent {
 
   };
 
-  quantityItem = text =>{
-
+  qualityItem = text =>{
     sessionStorage.setItem('usermanage_reportno',text.reportno);
-    sessionStorage.setItem('usermanage_certcode',text.certcode);
     router.push({
-      pathname:'/Main/UserManage',
+      pathname:'/Main/SampleIndex',
     });
-
-
-
-    //this.setState({peopleVisible:true});quantity
-
-
   };
 
   handleFormReset = () => {

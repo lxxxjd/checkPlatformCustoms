@@ -6,6 +6,8 @@ import {getAllSample,getCompany,getItems,addDetail,getStandards,getItemNames,del
 import {saveResultList} from '@/services/TestRecord'
 import {getInstrumentIDName} from '@/services/Intrusment'
 import {getInspman} from '@/services/Task'
+import {selectSamplesForCustoms} from '@/services/costoms'
+
 
 export default {
   namespace: 'inspectionAnalysis',
@@ -33,6 +35,10 @@ export default {
   },
 
   effects: {
+    *selectSamplesForCustoms({ payload,callback }, { call, put }) {
+      const response = yield call(selectSamplesForCustoms, payload);
+      if (callback) callback(response);
+    },
 
     *getInspman({ payload,callback }, { call, put }) {
       const response = yield call(getInspman, payload);

@@ -59,6 +59,24 @@ class SampleDetail extends PureComponent {
       title: '单位',
       dataIndex: 'unit',
     },
+    {
+      title: '参考值',
+      dataIndex: 'refervalue1',
+    },
+    {
+      title: '比较方法',
+      dataIndex: 'calway1',
+    },
+    {
+      title: '允许浮动',
+      dataIndex: 'rangevalue1',
+    },
+    {
+      title: '强制',
+      dataIndex: 'orFixed',
+    },
+
+
   ];
 
 
