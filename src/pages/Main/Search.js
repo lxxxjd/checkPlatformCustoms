@@ -62,9 +62,7 @@ class Search  extends PureComponent {
 	    });
   	};
 
-  	back =()=>{
-      router.push('/Main/Supervision');
-    }
+
 
 	 render() {
 		const {
@@ -109,9 +107,7 @@ class Search  extends PureComponent {
 	              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
 	                重置
 	              </Button>
-                <Button type="primary" style={{ marginLeft: 8 }} onClick={this.back}>
-                  返回
-                </Button>
+
 	            </span>
 	          </Col>
 	        </Row>

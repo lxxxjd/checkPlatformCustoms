@@ -535,7 +535,7 @@ class SampleModify extends PureComponent {
               {/*<Button style={{ marginBottom: 12 , marginRight:12}} type="primary" onClick={this.showLoad}>导入</Button>*/}
             </Col>
             <Col span={2}>
-              <Button type="primary" style={{ marginLeft: 8  ,paddingLeft:0,paddingRight:15 }} onClick={this.back}>
+              <Button type="primary" style={{ marginLeft: 8  ,paddingLeft:0,paddingRight:15,marginBottom:5 }} onClick={this.back}>
                 <Icon type="left" />返回
               </Button>
             </Col>
