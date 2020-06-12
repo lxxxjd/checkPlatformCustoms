@@ -158,7 +158,6 @@ export async function modifyDetail(params) {
     method: 'POST',
     data: {
       ...params,
-      method: 'post',
     },
   });
 }

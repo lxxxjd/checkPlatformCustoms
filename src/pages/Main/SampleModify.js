@@ -66,7 +66,7 @@ class SampleModify extends PureComponent {
     },
     {
       title: '参考值',
-      dataIndex: 'referValue1',
+      dataIndex: 'refervalue1',
     },
 
     {
@@ -75,7 +75,7 @@ class SampleModify extends PureComponent {
     },
     {
       title: '上下浮动',
-      dataIndex: 'rangeValue1',
+      dataIndex: 'rangevalue1',
     },
     {
       title: '强制',
@@ -110,7 +110,7 @@ class SampleModify extends PureComponent {
     },
     {
       title: '参考值',
-      dataIndex: 'referValue1',
+      dataIndex: 'refervalue1',
     },
 
     {
@@ -604,27 +604,42 @@ class SampleModify extends PureComponent {
             />
           </Modal>
           <Modal
-            title="修改样品标准"
+            title="设定监管要求"
             visible={modify}
             onOk={this.modify}
             onCancel={this.handleCancel}
             width={400}
           >
             <Form>
-              <Form.Item label="检验标准">
-                {getFieldDecorator('teststandard', {
-                  rules: [{ required: true, message: '请选择检验标准' }],
-                })(
-                    <Select
-                      showSearch
-                      placeholder="请选择" >
-                      {testStandardOptions}
-                    </Select>
-                  )}
-              </Form.Item>
+              {/*<Form.Item label="检验标准">*/}
+              {/*  {getFieldDecorator('teststandard', {*/}
+              {/*    rules: [{ required: true, message: '请选择检验标准' }],*/}
+              {/*  })(*/}
+              {/*      <Select*/}
+              {/*        showSearch*/}
+              {/*        placeholder="请选择" >*/}
+              {/*        {testStandardOptions}*/}
+              {/*      </Select>*/}
+              {/*    )}*/}
+              {/*</Form.Item>*/}
 
               <Form.Item label="参考值">
-               {getFieldDecorator('referValue', {
+               {getFieldDecorator('' +
+                 '' +
+                 '' +
+                 '' +
+                 '' +
+                 'npm' +
+                 ' start' +
+                 '' +
+                 '' +
+                 'npm star' +
+                 '' +
+                 '' +
+                 '' +
+                 '' +
+                 '' +
+                 'n[]]npm start', {
                 rules: [{ required:false, message: '请输入数值'}],
               })(
                 <Input disabled={this.state.orfixed} />
@@ -632,7 +647,7 @@ class SampleModify extends PureComponent {
                </Form.Item>
 
               <Form.Item label="比较方法">
-                {getFieldDecorator('calWay', {
+                {getFieldDecorator('calway1', {
                   rules: [{ required:false, message: '请选择比较方法'}],
                 })(
                   <Select placeholder="请选择比较方法" disabled={this.state.orfixed}>
@@ -647,7 +662,7 @@ class SampleModify extends PureComponent {
               </Form.Item>
 
               <Form.Item label="允许浮动">
-                {getFieldDecorator('rangeValue', {
+                {getFieldDecorator('rangevalue1', {
                   rules: [{ required:false, message: '请输入数值'}],
                 })(
                   <Input disabled={this.state.orfixed} />
