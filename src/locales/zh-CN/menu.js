@@ -1,5 +1,3 @@
-import Supervision from '@/pages/Main/Supervision';
-
 
 export default {
   'menu.home': '首页',
