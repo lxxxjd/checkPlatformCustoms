@@ -275,8 +275,8 @@ class Supervision extends PureComponent {
       dataIndex: 'customsNo',
     },
     {
-      title: '检验机构',
-      dataIndex: 'namec',
+      title: '收货人',
+      dataIndex: 'applicant',
       width:'16%'
     },
     {
@@ -311,19 +311,21 @@ class Supervision extends PureComponent {
     //   render: val => this.isValidDate(val),
     // },
 
-    {
-      title: '数重量',
-      render: (text, record) => this.getExceptionInfo(text),
-      width:150,
-    },
+    // {
+    //   title: '数重量',
+    //   render: (text, record) => this.getExceptionInfo(text),
+    //   width:150,
+    // },
 
 
     {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.peopleItem(text, record)}>人员</a>&nbsp;&nbsp;
-          {text.overallstate==="已发布"?[<a onClick={() => this.approveItem(text, record)}>审阅&nbsp;&nbsp;</a>]:[<span>审阅&nbsp;&nbsp;</span>]}
+          <a onClick={() => this.reviewItem(text, record)}>查看</a>&nbsp;&nbsp;
+          <a onClick={() => this.quantityItem(text, record)}>数重量</a>&nbsp;&nbsp;
+          <a onClick={() => this.qualityItem(text, record)}>品质</a>&nbsp;&nbsp;
+          {/*{text.overallstate==="已发布"?[<a onClick={() => this.approveItem(text, record)}>审阅&nbsp;&nbsp;</a>]:[<span>审阅&nbsp;&nbsp;</span>]}*/}
           <a onClick={() => this.previewItem(text, record)}>委托详情</a>
         </Fragment>
       ),
@@ -442,19 +444,11 @@ class Supervision extends PureComponent {
 
   };
 
-  peopleItem = text =>{
-
+  qualityItem = text =>{
     sessionStorage.setItem('usermanage_reportno',text.reportno);
-    sessionStorage.setItem('usermanage_certcode',text.certcode);
     router.push({
-      pathname:'/Main/UserManage',
+      pathname:'/Main/SampleIndex',
     });
-
-
-
-    //this.setState({peopleVisible:true});
-
-
   };
 
   handleFormReset = () => {

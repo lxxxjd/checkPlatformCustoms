@@ -215,6 +215,11 @@ export async function getCustomReceiveListByCustomsName(params) {
 }
 
 
+export async function selectSamplesForCustoms(params) {
+  return request(`/api/sampleRegister/selectSamplesForCustoms?reportno=${params.reportno}`);
+}
+
+
 
 
 

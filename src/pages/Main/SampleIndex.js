@@ -10,7 +10,7 @@ import {
   Input,
   Button,
   Select,
-  Table
+  Table, Icon,
 } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import moment from 'moment'
@@ -32,13 +32,16 @@ class SampleIndex extends PureComponent {
   state = {
     formValues: {},
     visible:false,
+    dataSource:[],
+    shipname:'',
+    cargoname:'',
   };
 
   columns = [
-    {
-      title: '委托编号',
-      dataIndex: 'reportno',
-    },
+    // {
+    //   title: '委托编号',
+    //   dataIndex: 'reportno',
+    // },
     {
       title: '委托日期',
       dataIndex: 'reportdate',
@@ -70,9 +73,8 @@ class SampleIndex extends PureComponent {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          {text.overallstate==="已发布"|| text.overallstate==="申请作废"?[]:[<a onClick={() => this.mobileItem(text, record)}>指标&nbsp;&nbsp;</a>]}
-          <a onClick={() => this.detailItem(text, record)}>查看</a>
-          &nbsp;&nbsp;
+          <a onClick={() => this.mobileItem(text, record)}>设定&nbsp;&nbsp;</a>
+          <a onClick={() => this.detailItem(text, record)}>查看&nbsp;&nbsp;</a>
           <a onClick={() => this.previewItem(text, record)}>委托详情</a>
         </Fragment>
       ),
@@ -82,14 +84,16 @@ class SampleIndex extends PureComponent {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    const user = JSON.parse(localStorage.getItem("customs_userinfo"));
-    const certCode =  sessionStorage.getItem('SampleIndex_certCode');
+    const reportno =  sessionStorage.getItem('usermanage_reportno');
     dispatch({
-      type: 'inspectionAnalysis/getAllSampleAndTestMan',
+      type: 'inspectionAnalysis/selectSamplesForCustoms',
       payload:{
-        certCode,
-        nameC:user.nameC,
-        role:user.role,
+        reportno,
+      },
+      callback:(response) =>{
+        if (response.code === 200) {
+          this.setState({dataSource: response.data});
+        }
       }
     });
   }
@@ -119,21 +123,34 @@ class SampleIndex extends PureComponent {
     });
   };
 
+  back =()=>{
+    router.push('/Main/Supervision');
+  }
+
   render() {
     const {
-      inspectionAnalysis: {samples},
       loading,
     } = this.props;
+
+    const {dataSource} = this.state;
     return (
-      <PageHeaderWrapper title="样品指标">
+      <PageHeaderWrapper title="指标监管">
         <Card bordered={false} size="small">
           <div className={styles.tableList}>
-            <div className={styles.tableListForm}><SearchForm></SearchForm></div>
+            {/*<div className={styles.tableListForm}><SearchForm></SearchForm></div>*/}
+            <Row>
+              <Col span={22} />
+              <Col span={2}>
+                <Button type="primary" style={{ marginTop:10, marginLeft: 8  ,paddingLeft:0,paddingRight:15,marginBottom:5 }} onClick={this.back}>
+                  <Icon type="left" />返回
+                </Button>
+              </Col>
+            </Row>
             <Table
               style={{marginTop:5}}
               size="middle"
               loading={loading}
-              dataSource={samples.list}
+              dataSource={dataSource}
               pagination={{showQuickJumper:true,showSizeChanger:true}}
               columns={this.columns}
               rowKey="sampleno"

@@ -66,16 +66,16 @@ class SampleModify extends PureComponent {
     },
     {
       title: '参考值',
-      dataIndex: 'referValue',
+      dataIndex: 'refervalue1',
     },
 
     {
       title: '比较方法',
-      dataIndex: 'calWay',
+      dataIndex: 'calway1',
     },
     {
       title: '上下浮动',
-      dataIndex: 'rangeValue',
+      dataIndex: 'rangevalue1',
     },
     {
       title: '强制',
@@ -85,8 +85,8 @@ class SampleModify extends PureComponent {
     { title: '操作',
       render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.modifyItem(text, record)}>修改 &nbsp;&nbsp;</a>
-          <a onClick={() => this.deleteOne(text, record)}>删除</a>
+          <a onClick={() => this.modifyItem(text, record)}>设定 &nbsp;&nbsp;</a>
+          {/*<a onClick={() => this.deleteOne(text, record)}>删除</a>*/}
         </Fragment>
       ),
     },
@@ -110,16 +110,16 @@ class SampleModify extends PureComponent {
     },
     {
       title: '参考值',
-      dataIndex: 'referValue',
+      dataIndex: 'refervalue1',
     },
 
     {
       title: '比较方法',
-      dataIndex: 'calWay',
+      dataIndex: 'calway1',
     },
     {
       title: '上下浮动',
-      dataIndex: 'rangeValue',
+      dataIndex: 'rangevalue1',
     },
     {
       title: '强制',
@@ -139,10 +139,10 @@ class SampleModify extends PureComponent {
         item:text.itemC,
       },
     });
-    form.setFieldsValue({['teststandard']: text.teststandard});
-    form.setFieldsValue({['referValue']: text.referValue});
-    form.setFieldsValue({['rangeValue']: text.rangeValue});
-    form.setFieldsValue({['calWay']: text.calWay});
+    // form.setFieldsValue({['teststandard']: text.teststandard});
+    form.setFieldsValue({['refervalue1']: text.refervalue1});
+    form.setFieldsValue({['rangevalue1']: text.rangevalue1});
+    form.setFieldsValue({['calway1']: text.calway1});
     this.setState({ testDetail : text});
     // console.log(text);
     if(text.orFixed === "是" ){
@@ -161,10 +161,10 @@ class SampleModify extends PureComponent {
     form.validateFields((err, fieldsValue) => {
       console.log(err);
       if (err) return;
-      value.teststandard =  form.getFieldValue('teststandard');
-      value.referValue =  form.getFieldValue('referValue');
-      value.calWay =  form.getFieldValue('calWay');
-      value.rangeValue =  form.getFieldValue('rangeValue');
+      // value.teststandard =  form.getFieldValue('teststandard');
+      value.refervalue1 =  form.getFieldValue('refervalue1');
+      value.calway1 =  form.getFieldValue('calway1');
+      value.rangevalue1 =  form.getFieldValue('rangevalue1');
       dispatch({
         type: 'inspectionAnalysis/modifyDetail',
         payload: value,
@@ -240,37 +240,37 @@ class SampleModify extends PureComponent {
       }
     });
   };
-  columns1 = [
-    {
-      title: '委托日期',
-      dataIndex: 'reportdate',
-    },
-    {
-      title: '委托人',
-      dataIndex: 'applicant',
-    },
-    {
-      title: '检查品名',
-      dataIndex: 'cargoname',
-    },
-    {
-      title: '样品名称',
-      dataIndex: 'samplename',
-    },
-    {
-      title: '样品编号',
-      dataIndex: 'sampleno',
-    },
-    { title: '操作',
-      render: (text, record) => (
-        <Fragment>
-          <a onClick={() => this.loadItem(text, record)}>导入</a>
-          &nbsp;&nbsp;
-          <a onClick={() => this.detailItem(text, record)}>查看</a>
-        </Fragment>
-      ),
-    },
-  ];
+  // columns1 = [
+  //   {
+  //     title: '委托日期',
+  //     dataIndex: 'reportdate',
+  //   },
+  //   {
+  //     title: '委托人',
+  //     dataIndex: 'applicant',
+  //   },
+  //   {
+  //     title: '检查品名',
+  //     dataIndex: 'cargoname',
+  //   },
+  //   {
+  //     title: '样品名称',
+  //     dataIndex: 'samplename',
+  //   },
+  //   {
+  //     title: '样品编号',
+  //     dataIndex: 'sampleno',
+  //   },
+  //   { title: '操作',
+  //     render: (text, record) => (
+  //       <Fragment>
+  //         <a onClick={() => this.loadItem(text, record)}>导入</a>
+  //         &nbsp;&nbsp;
+  //         <a onClick={() => this.detailItem(text, record)}>查看</a>
+  //       </Fragment>
+  //     ),
+  //   },
+  // ];
 
   loadItem = text =>{
     const { dispatch } = this.props;
@@ -530,12 +530,12 @@ class SampleModify extends PureComponent {
         <Card bordered={false}>
             <Row>
             <Col sm={22}>
-              <Button style={{ marginBottom: 12 , marginRight:12}} type="primary" onClick={this.showAddMany}>添加</Button>
-              <Button style={{ marginBottom: 12 , marginRight:12}} type="primary" onClick={this.showDelete}>批量删除</Button>
-              <Button style={{ marginBottom: 12 , marginRight:12}} type="primary" onClick={this.showLoad}>导入</Button>
+              {/*<Button style={{ marginBottom: 12 , marginRight:12}} type="primary" onClick={this.showAddMany}>添加</Button>*/}
+              {/*<Button style={{ marginBottom: 12 , marginRight:12}} type="primary" onClick={this.showDelete}>批量删除</Button>*/}
+              {/*<Button style={{ marginBottom: 12 , marginRight:12}} type="primary" onClick={this.showLoad}>导入</Button>*/}
             </Col>
             <Col span={2}>
-              <Button type="primary" style={{ marginLeft: 8  ,paddingLeft:0,paddingRight:15 }} onClick={this.back}>
+              <Button type="primary" style={{ marginLeft: 8  ,paddingLeft:0,paddingRight:15,marginBottom:5 }} onClick={this.back}>
                 <Icon type="left" />返回
               </Button>
             </Col>
@@ -604,27 +604,42 @@ class SampleModify extends PureComponent {
             />
           </Modal>
           <Modal
-            title="修改样品标准"
+            title="设定监管要求"
             visible={modify}
             onOk={this.modify}
             onCancel={this.handleCancel}
             width={400}
           >
             <Form>
-              <Form.Item label="检验标准">
-                {getFieldDecorator('teststandard', {
-                  rules: [{ required: true, message: '请选择检验标准' }],
-                })(
-                    <Select
-                      showSearch
-                      placeholder="请选择" >
-                      {testStandardOptions}
-                    </Select>
-                  )}
-              </Form.Item>
+              {/*<Form.Item label="检验标准">*/}
+              {/*  {getFieldDecorator('teststandard', {*/}
+              {/*    rules: [{ required: true, message: '请选择检验标准' }],*/}
+              {/*  })(*/}
+              {/*      <Select*/}
+              {/*        showSearch*/}
+              {/*        placeholder="请选择" >*/}
+              {/*        {testStandardOptions}*/}
+              {/*      </Select>*/}
+              {/*    )}*/}
+              {/*</Form.Item>*/}
 
               <Form.Item label="参考值">
-               {getFieldDecorator('referValue', {
+               {getFieldDecorator('' +
+                 '' +
+                 '' +
+                 '' +
+                 '' +
+                 'npm' +
+                 ' start' +
+                 '' +
+                 '' +
+                 'npm star' +
+                 '' +
+                 '' +
+                 '' +
+                 '' +
+                 '' +
+                 'n[]]npm start', {
                 rules: [{ required:false, message: '请输入数值'}],
               })(
                 <Input disabled={this.state.orfixed} />
@@ -632,7 +647,7 @@ class SampleModify extends PureComponent {
                </Form.Item>
 
               <Form.Item label="比较方法">
-                {getFieldDecorator('calWay', {
+                {getFieldDecorator('calway1', {
                   rules: [{ required:false, message: '请选择比较方法'}],
                 })(
                   <Select placeholder="请选择比较方法" disabled={this.state.orfixed}>
@@ -647,7 +662,7 @@ class SampleModify extends PureComponent {
               </Form.Item>
 
               <Form.Item label="允许浮动">
-                {getFieldDecorator('rangeValue', {
+                {getFieldDecorator('rangevalue1', {
                   rules: [{ required:false, message: '请输入数值'}],
                 })(
                   <Input disabled={this.state.orfixed} />
