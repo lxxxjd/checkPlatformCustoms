@@ -1,7 +1,7 @@
 import {getAllSample,getCompany,getItems,addDetail,getStandards,getItemNames,deleteDetails,addDetails,
   getAllDetails,addResult,assign,getTestBySampleNo,getAllSampleAndTestMan,getReport,getAllTaskInspman,
   deleteTestBySampleNo,updateTestInfo,getSamplesByFilter,loadDetails,getTestStandard,modifyDetail,
-  reviewSampleRegister,returnSampleRegister,getAllSampleAndTestCompany,deleteDetailItem,
+  reviewSampleRegister,returnSampleRegister,getAllSampleAndTestCompany,deleteDetailItem,getDetailByKeyno
 } from '@/services/InspectionAnalysis'
 import {saveResultList} from '@/services/TestRecord'
 import {getInstrumentIDName} from '@/services/Intrusment'
@@ -35,6 +35,12 @@ export default {
   },
 
   effects: {
+
+    *getDetailByKeyno({ payload,callback }, { call, put }) {
+      const response = yield call(getDetailByKeyno, payload);
+      if (callback) callback(response);
+    },
+
     *selectSamplesForCustoms({ payload,callback }, { call, put }) {
       const response = yield call(selectSamplesForCustoms, payload);
       if (callback) callback(response);

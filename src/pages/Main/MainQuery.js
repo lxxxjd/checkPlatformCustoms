@@ -314,7 +314,13 @@ class MainQuery extends PureComponent {
     {
       title: '数重量',
       render: (text, record) => this.getExceptionInfo(text),
-      width:150,
+      // width:150,
+    },
+
+    {
+      title: '品质',
+      render: (text, record) => this.getExceptionInfo1(text),
+      // width:150,
     },
 
 
@@ -390,6 +396,16 @@ class MainQuery extends PureComponent {
         {(text.overallstate==="已发布" && text.exceptioninfo!==null && text.exceptioninfo!=="")?
           // eslint-disable-next-line react/jsx-no-bind
           [<Tag color="orange" onClick={this.onTagClick.bind(this,text.reportno)}>{text.exceptioninfo}</Tag>]:[]}
+      </Fragment>
+    ]
+  };
+
+  getExceptionInfo1 =(text)=>{
+    return [
+      <Fragment>
+        {(text.quanlityerr1!==null && text.quanlityerr1!=="")?
+          // eslint-disable-next-line react/jsx-no-bind
+          [<Tag color="orange">{text.quanlityerr1}</Tag>]:[]}
       </Fragment>
     ]
   };

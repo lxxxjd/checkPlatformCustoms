@@ -156,34 +156,47 @@ class SampleModify extends PureComponent {
 
   modify = text =>{
     const {testDetail} = this.state;
-    var value = testDetail;
     const { dispatch, form } = this.props;
-    form.validateFields((err, fieldsValue) => {
-      console.log(err);
-      if (err) return;
-      // value.teststandard =  form.getFieldValue('teststandard');
-      value.refervalue1 =  form.getFieldValue('refervalue1');
-      value.calway1 =  form.getFieldValue('calway1');
-      value.rangevalue1 =  form.getFieldValue('rangevalue1');
-      dispatch({
-        type: 'inspectionAnalysis/modifyDetail',
-        payload: value,
-        callback:response => {
-          if(response.code === 200){
-            notification.open({
-              message: '修改成功',
+    dispatch({
+      type: 'inspectionAnalysis/getDetailByKeyno',
+      payload: {keyno:testDetail.keyno},
+      callback:response => {
+        if(response.code === 200){
+          var value = response.data;
+          form.validateFields((err, fieldsValue) => {
+            if (err) return;
+            // value.teststandard =  fieldsValue.teststandard;
+            value.refervalue1 =  fieldsValue.refervalue1;
+            value.calway1 =  fieldsValue.calway1;
+            value.rangevalue1 =  fieldsValue.rangevalue1;
+            dispatch({
+              type: 'inspectionAnalysis/modifyDetail',
+              payload: value,
+              callback:response2 => {
+                if(response2.code === 200){
+                  notification.open({
+                    message: '修改成功',
+                  });
+                  this.componentDidMount();
+                }else{
+                  notification.open({
+                    message: '修改失败',
+                    description:response2.message,
+                  });
+                }
+              }
             });
-          }else{
-            notification.open({
-              message: '修改失败',
-              description:response.message,
-            });
-          }
+          });
+          form.resetFields();
+          this.setState({ modify: false });
+        }else{
+          notification.open({
+            message: '修改失败',
+            description:response.message,
+          });
         }
-      });
+      }
     });
-    form.resetFields();
-    this.setState({ modify: false });
   };
 
   deleteOne= text => {
@@ -316,6 +329,7 @@ class SampleModify extends PureComponent {
     });
     this.setState({onDetail:true});
   };
+
   columns3 = [
     {
       title: '指标名称',
@@ -335,11 +349,16 @@ class SampleModify extends PureComponent {
     },
     {
       title: '参考值',
-      dataIndex: 'referValue',
+      dataIndex: 'refervalue1',
     },
+
     {
       title: '比较方法',
-      dataIndex: 'calWay',
+      dataIndex: 'calway1',
+    },
+    {
+      title: '上下浮动',
+      dataIndex: 'rangevalue1',
     },
     {
       title: '是否强制',
@@ -624,22 +643,7 @@ class SampleModify extends PureComponent {
               {/*</Form.Item>*/}
 
               <Form.Item label="参考值">
-               {getFieldDecorator('' +
-                 '' +
-                 '' +
-                 '' +
-                 '' +
-                 'npm' +
-                 ' start' +
-                 '' +
-                 '' +
-                 'npm star' +
-                 '' +
-                 '' +
-                 '' +
-                 '' +
-                 '' +
-                 'n[]]npm start', {
+               {getFieldDecorator('refervalue1', {
                 rules: [{ required:false, message: '请输入数值'}],
               })(
                 <Input disabled={this.state.orfixed} />

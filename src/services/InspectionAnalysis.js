@@ -162,6 +162,11 @@ export async function modifyDetail(params) {
   });
 }
 
+export async function getDetailByKeyno(params) {
+  return request(`/api/testdetail/getDetailByKeyno?keyno=${params.keyno}`);
+}
+
+
 export async function addDetail(params) {
   const cargonameC = params.cargonameC;
   delete params.cargonameC;
