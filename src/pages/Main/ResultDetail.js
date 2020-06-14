@@ -17,7 +17,7 @@ import {
   DatePicker,
   notification,
   Icon,
-  Transfer, Tooltip, message,Descriptions
+  Transfer, Tooltip, message,Descriptions,InputNumber
 } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import moment from 'moment'
@@ -44,6 +44,44 @@ const ResultDetailUpdateForm = Form.create()(props => {
     });
   };
 
+  const onChange=(value)=>{
+    const refervalue = form.getFieldValue('refervalue');
+    // const floatvalue = form.getFieldValue('floatvalue');
+    const floatrate = form.getFieldValue('floatrate');
+    if(refervalue!==undefined && refervalue !=="" && value !=="" &&
+      value !== undefined && floatrate !=="" && floatrate !== undefined){
+      let floatrate  =(value*100)/refervalue;
+      console.log(value)
+      console.log(refervalue)
+      console.log(floatrate)
+      floatrate = floatrate.toFixed(2);
+      form.setFieldsValue({['floatrate']: floatrate});
+    }
+  };
+
+  const onChange2=(value)=>{
+    const refervalue = form.getFieldValue('refervalue');
+    const floatvalue = form.getFieldValue('floatvalue');
+    // const floatrate = form.getFieldValue('floatrate');
+    if(refervalue!==undefined && refervalue !=="" && value !=="" &&
+      value !== undefined && floatvalue !=="" && floatvalue !== undefined){
+      let floatvalue =refervalue * (value/100);
+      floatvalue = floatvalue.toFixed(2);
+      form.setFieldsValue({['floatvalue']: floatvalue});
+    }
+  };
+
+  const onChange3=(value)=>{
+    const floatvalue = form.getFieldValue('floatvalue');
+    const floatrate = form.getFieldValue('floatrate');
+    if(value!==undefined && value !=="" && floatvalue !=="" &&
+      floatvalue !== undefined && floatrate !=="" && floatrate !== undefined){
+      let floatvalue =value * (floatrate/100);
+      floatvalue = floatvalue.toFixed(2);
+      form.setFieldsValue({['floatvalue']: floatvalue});
+    }
+  };
+
   return (
     <Modal
       destroyOnClose
@@ -51,7 +89,7 @@ const ResultDetailUpdateForm = Form.create()(props => {
       visible={modalDetailVisible}
       onOk={okHandle}
       onCancel={() => handleModalDetailVisible()}
-      width={500}
+      width={350}
       style={{ top: 100 }}
     >
       <Form>
@@ -61,6 +99,7 @@ const ResultDetailUpdateForm = Form.create()(props => {
             initialValue:modalDetailInfo.refervalue,
             rules: [{
               type: 'number',
+              required:true,
               transform(value) {
                 if (value) {
                   return Number(value);
@@ -68,13 +107,29 @@ const ResultDetailUpdateForm = Form.create()(props => {
               },
               message: '请输入数字或者小数'
             }],
-          })(<Input placeholder="请输入参考值" />)}
+          })(<InputNumber step={0.01} style={{width:'100%'}} placeholder="请输入参考值" onChange={onChange3} />)}
         </Form.Item>
         <Form.Item labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="浮动范围">
+          {form.getFieldDecorator('floatvalue', {
+            initialValue:modalDetailInfo.floatrate,
+            rules: [{
+              type: 'number',
+              required:true,
+              transform(value) {
+                if (value) {
+                  return Number(value);
+                }
+              },
+              message: '请输入数字或者小数'
+            }],
+          })(<InputNumber step={0.01} style={{width:'100%'}} placeholder="请输入浮动范围" onChange={onChange} />)}
+        </Form.Item>
+        <Form.Item labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="浮动比例">
           {form.getFieldDecorator('floatrate', {
             initialValue:modalDetailInfo.floatrate,
             rules: [{
               type: 'number',
+              required:true,
               transform(value) {
                 if (value) {
                   return Number(value);
@@ -82,21 +137,18 @@ const ResultDetailUpdateForm = Form.create()(props => {
               },
               message: '请输入数字或者小数'
             }],
-          })(<Input placeholder="请输入浮动范围" />)}
-        </Form.Item>
-        <Form.Item labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="浮动比例">
-          {form.getFieldDecorator('floatvalue', {
-            initialValue:modalDetailInfo.floatvalue,
-            rules: [{
-              type: 'number',
-              transform(value) {
-                if (value) {
-                  return Number(value);
-                }
-              },
-              message: '请输入数字或者小数'
-            }],
-          })(<Input placeholder="请输入浮动比例" />)}
+          })(
+            <InputNumber
+              placeholder="请输入参考值"
+              min={0}
+              max={100}
+              step={0.1}
+              formatter={value => `${value}%`}
+              parser={value => value.replace('%', '')}
+              onChange={onChange2}
+              style={{width:'100%'}}
+            />
+          )}
         </Form.Item>
       </Form>
     </Modal>
@@ -839,7 +891,6 @@ class ResultDetail extends PureComponent {
       params.floatvalue = fieldsValue.floatvalue;
       params.floatrate = fieldsValue.floatrate;
       const {dispatch} = this.props;
-      console.log(params);
       dispatch({
         type: 'checkResult/updateCheckResult',
         payload : params,
@@ -855,6 +906,9 @@ class ResultDetail extends PureComponent {
               payload:{
                 reportno,
               }
+            });
+            notification.open({
+              message: '更新成功',
             });
           }
         }

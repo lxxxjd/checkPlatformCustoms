@@ -470,6 +470,7 @@ class MainQuery extends PureComponent {
   };
 
   getExceptionInfo1 =(text)=>{
+
     return [
       <Fragment>
         {(text.overallstate==="已发布" && text.quanlityerr1!==null && text.quanlityerr1!=="")?
