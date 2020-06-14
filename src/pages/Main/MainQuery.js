@@ -472,7 +472,7 @@ class MainQuery extends PureComponent {
   getExceptionInfo1 =(text)=>{
     return [
       <Fragment>
-        {(text.quanlityerr1!==null && text.quanlityerr1!=="")?
+        {(text.overallstate==="已发布" && text.quanlityerr1!==null && text.quanlityerr1!=="")?
           // eslint-disable-next-line react/jsx-no-bind
           [<Tag color="orange" onClick={this.onTagClick1.bind(this,text.reportno)}>{text.quanlityerr1}</Tag>]:[]}
       </Fragment>

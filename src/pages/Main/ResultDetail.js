@@ -343,7 +343,7 @@ class ResultDetail extends PureComponent {
 
     const { dispatch } = this.props;
     const reportno = sessionStorage.getItem('reportno');
-    const user = JSON.parse(localStorage.getItem("userinfo"));
+    const certCode = reportno.substring(0,4);
     dispatch({
       type: 'checkResult/getCheckResult',
       payload:{
@@ -353,7 +353,7 @@ class ResultDetail extends PureComponent {
     dispatch({
       type: 'checkResult/getInstrument',
       payload:{
-        certCode:user.certCode,
+        certCode,
       },
       callback :(response) =>{
         if(response.code === 400){
@@ -381,7 +381,7 @@ class ResultDetail extends PureComponent {
     dispatch({
       type: 'checkResult/getStandard',
       payload:{
-        certCode:user.certCode,
+        certCode
       },
       callback : (response) => {
         if(response.code === 400){
@@ -543,13 +543,13 @@ class ResultDetail extends PureComponent {
       }
     });
 
-    const user = JSON.parse(localStorage.getItem("userinfo"));
+    const certCode = reportno.substring(0,4);
     dispatch({
       type: 'checkResult/getStandard',
       payload:{
         kind:"field",
         value:text.inspway,
-        certCode:user.certCode,
+        certCode,
       },
       callback : (response) => {
         if(response.code === 400){
@@ -740,7 +740,7 @@ class ResultDetail extends PureComponent {
       payload:{
         kind:"field",
         value,
-        certCode:user.certCode,
+        certCode,
       },
       callback : (response) => {
         if(response.code === 400){
