@@ -94,7 +94,7 @@ const ResultDetailUpdateForm = Form.create()(props => {
     >
       <Form>
 
-        <Form.Item labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="参考值">
+        <Form.Item labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="申报数量">
           {form.getFieldDecorator('refervalue', {
             initialValue:modalDetailInfo.refervalue,
             rules: [{
@@ -111,7 +111,7 @@ const ResultDetailUpdateForm = Form.create()(props => {
         </Form.Item>
         <Form.Item labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="浮动范围">
           {form.getFieldDecorator('floatvalue', {
-            initialValue:modalDetailInfo.floatrate,
+            initialValue:modalDetailInfo.floatvalue,
             rules: [{
               type: 'number',
               required:true,
@@ -122,7 +122,7 @@ const ResultDetailUpdateForm = Form.create()(props => {
               },
               message: '请输入数字或者小数'
             }],
-          })(<InputNumber step={0.01} style={{width:'100%'}} placeholder="请输入浮动范围" onChange={onChange} />)}
+          })(<InputNumber step={50} min={0} style={{width:'100%'}} placeholder="请输入浮动范围" onChange={onChange} />)}
         </Form.Item>
         <Form.Item labelCol={{ span: 6 }} wrapperCol={{ span: 16 }} label="浮动比例">
           {form.getFieldDecorator('floatrate', {
@@ -237,71 +237,71 @@ class ResultDetail extends PureComponent {
       title: '检验项目',
       dataIndex: 'inspway',
     },
+    // {
+    //   title: '开始日期',
+    //   dataIndex: 'begindate',
+    //   render: val => this.isValidDate(val),
+    // },
+    // {
+    //   title: '结束日期',
+    //   dataIndex: 'finishdate',
+    //   render: val => this.isValidDate(val),
+    // },
+    // {
+    //   title: '人员',
+    //   dataIndex: 'inspman',
+    //   render: (text, record) => {
+    //     if(typeof(text) === undefined || text === null){
+    //       return;
+    //     }
+    //     let  contentStr = [];
+    //     contentStr = text.split("|");
+    //     if (contentStr.length < 2) {
+    //       return text;
+    //     }
+    //     let result = null;
+    //     const br = <br />;
+    //     for( let  j=0 ; j < contentStr.length ; j++){
+    //       if(j===0){
+    //          result=contentStr[j];
+    //       }else{
+    //         result=<span>{result}{br}{contentStr[j]}</span>;
+    //       }
+    //     }
+    //     return <div>{result}</div>;
+    //   },
+    // },
+    // {
+    //   title: '重量',
+    //   dataIndex: 'weight',
+    // },
     {
-      title: '开始日期',
-      dataIndex: 'begindate',
-      render: val => this.isValidDate(val),
-    },
-    {
-      title: '结束日期',
-      dataIndex: 'finishdate',
-      render: val => this.isValidDate(val),
-    },
-    {
-      title: '人员',
-      dataIndex: 'inspman',
-      render: (text, record) => {
-        if(typeof(text) === undefined || text === null){
-          return;
-        }
-        let  contentStr = [];
-        contentStr = text.split("|");
-        if (contentStr.length < 2) {
-          return text;
-        }
-        let result = null;
-        const br = <br />;
-        for( let  j=0 ; j < contentStr.length ; j++){
-          if(j===0){
-             result=contentStr[j];
-          }else{
-            result=<span>{result}{br}{contentStr[j]}</span>;
-          }
-        }
-        return <div>{result}</div>;
-      },
-    },
-    {
-      title: '重量',
-      dataIndex: 'weight',
-    },
-    {
-      title: '参考值',
+      title: '申报数量',
       dataIndex: 'refervalue',
     },
     {
-      title: '浮动范围',
+      title: '允许浮动',
       dataIndex: 'floatvalue',
     },
     {
-      title: '浮动比例',
+      title: '浮动比例（%）',
       dataIndex: 'floatrate',
     },
 
-    { title: '结果描述', dataIndex: 'result',key:"desc",
-      onCell: () => {
-        return {
-          style: {
-            maxWidth: 150,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow:'ellipsis',
-            cursor:'pointer'
-          }
-        }
-      },
-      render: (text) => <Tooltip placement="topLeft" arrowPointAtCenter title={text}>{text}</Tooltip>
-    },
+    // { title: '结果描述', dataIndex: 'result',key:"desc",
+    //   onCell: () => {
+    //     return {
+    //       style: {
+    //         maxWidth: 150,
+    //         overflow: 'hidden',
+    //         whiteSpace: 'nowrap',
+    //         textOverflow:'ellipsis',
+    //         cursor:'pointer'
+    //       }
+    //     }
+    //   },
+    //   render: (text) => <Tooltip placement="topLeft" arrowPointAtCenter title={text}>{text}</Tooltip>
+    // },
     {
         title: '操作',
         render: (text, record) => (

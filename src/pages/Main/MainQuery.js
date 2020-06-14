@@ -41,10 +41,10 @@ const ReviewFrom1 = (props => {
       title: '检验标准',
       dataIndex: 'teststandard',
     },
-    {
-      title: '单位',
-      dataIndex: 'unit',
-    },
+    // {
+    //   title: '单位',
+    //   dataIndex: 'unit',
+    // },
     {
       title: '检验结果',
       dataIndex: 'testresult',
@@ -103,10 +103,10 @@ const ReviewFrom = (props => {
       title: '参考值',
       dataIndex: 'quantityd',
     },
-    {
-      title: '单位',
-      dataIndex: 'unit',
-    },
+    // {
+    //   title: '单位',
+    //   dataIndex: 'unit',
+    // },
     {
       title: '结果',
       dataIndex: 'weight',
@@ -116,7 +116,7 @@ const ReviewFrom = (props => {
       dataIndex: 'diff',
     },
     {
-      title: '差比(千分比）',
+      title: '差比（%）',
       dataIndex: 'diffrate',
     },
     {
