@@ -219,6 +219,10 @@ export async function selectSamplesForCustoms(params) {
   return request(`/api/sampleRegister/selectSamplesForCustoms?reportno=${params.reportno}`);
 }
 
+export async function qualityErrView(params) {
+    return request(`/api/testdetail/qualityErrView?reportno=${params.reportno}`);
+}
+
 
 
 

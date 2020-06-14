@@ -61,7 +61,7 @@ const ReviewFrom = (props => {
   return (
     <Modal
       destroyOnClose
-      title="查看异常详情"
+      title="查看数重量异常"
       visible={modalReviewVisible}
       style={{ top: 100 }}
       width={600}
@@ -195,8 +195,13 @@ const getValue = obj =>
 class Supervision extends PureComponent {
   state = {
 
+
+
     modalReviewVisible:false,
     exceptionData:[],
+
+
+
     modalInfo :{},
     mainResult:[],
     peopleVisible:false,
@@ -417,6 +422,20 @@ class Supervision extends PureComponent {
     });
   };
 
+  onTagClick1 =(reportno)=>{
+    this.handleModalReviewVisible1(true);
+    const{dispatch} = this.props;
+    dispatch({
+      type: 'main/qualityErrView',
+      payload:{reportno},
+      callback:(response) =>{
+        if(response.code===200){
+          this.setState({exceptionData1:response.data});
+        }
+      }
+    });
+  };
+
   approveItem = text =>{
     message.success("正在拉取数据，请稍等几秒...");
     this.setState({loadingState:true});
@@ -529,6 +548,7 @@ class Supervision extends PureComponent {
       modalReviewVisible: !!flag,
     });
   };
+
 
 
 
@@ -990,7 +1010,7 @@ class Supervision extends PureComponent {
     const { getFieldDecorator, getFieldValue } = this.props.form;
     getFieldDecorator('keys', { initialValue: [] });
     const keys = getFieldValue('keys');
-    const { mainResult, peopleVisible,man ,showVisible,value,treeData,loadingState ,reportDetail,modalReviewVisible,exceptionData } = this.state;
+    const { mainResult, peopleVisible,man ,showVisible,value,treeData,loadingState ,reportDetail,modalReviewVisible,exceptionData} = this.state;
     const user = JSON.parse(localStorage.getItem("customs_userinfo"));
     const parentMethods = {
       handleModalReviewVisible:this.handleModalReviewVisible,

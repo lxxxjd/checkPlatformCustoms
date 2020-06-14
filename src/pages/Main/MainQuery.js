@@ -24,6 +24,73 @@ const { Header, Footer, Sider, Content } = Layout;
 const { TreeNode } = Tree;
 const { CheckableTag } = Tag;
 
+
+// 查看框品质异常
+const ReviewFrom1 = (props => {
+  const { modalReviewVisible1, handleModalReviewVisible1,exceptionData1,loading } = props;
+  const columns = [
+    {
+      title: '样品编号',
+      dataIndex: 'sampleno',
+    },
+    {
+      title: '样品名称',
+      dataIndex: 'samplename',
+    },
+    {
+      title: '检验标准',
+      dataIndex: 'teststandard',
+    },
+    {
+      title: '单位',
+      dataIndex: 'unit',
+    },
+    {
+      title: '检验结果',
+      dataIndex: 'testresult',
+    },
+    {
+      title: '参考值',
+      dataIndex: 'refervalue1',
+    },
+    {
+      title: '偏差',
+      dataIndex: 'diffvalue1',
+    },
+    {
+      title: '状态',
+      dataIndex: 'qualityerr1',
+    },
+  ];
+
+  return (
+    <Modal
+      destroyOnClose
+      title="查看品质异常"
+      visible={modalReviewVisible1}
+      style={{ top: 10 }}
+      width={1000}
+      onCancel={() => handleModalReviewVisible1()}
+      footer={[
+        <Button type="primary" onClick={() => handleModalReviewVisible1()}>
+          关闭
+        </Button>
+      ]}
+    >
+      <Table
+        size="middle"
+        rowKey="keyno"
+        loading={loading}
+        dataSource={exceptionData1}
+        pagination={{showQuickJumper:true,showSizeChanger:true}}
+        columns={columns}
+      />
+    </Modal>
+  );
+});
+
+
+
 // 查看框
 const ReviewFrom = (props => {
   const { modalReviewVisible, handleModalReviewVisible,exceptionData,loading } = props;
@@ -194,6 +261,8 @@ const getValue = obj =>
 @Form.create()
 class MainQuery extends PureComponent {
   state = {
+    modalReviewVisible1:false,
+    exceptionData1:[],
 
     modalReviewVisible:false,
     exceptionData:[],
@@ -405,9 +474,23 @@ class MainQuery extends PureComponent {
       <Fragment>
         {(text.quanlityerr1!==null && text.quanlityerr1!=="")?
           // eslint-disable-next-line react/jsx-no-bind
-          [<Tag color="orange">{text.quanlityerr1}</Tag>]:[]}
+          [<Tag color="orange" onClick={this.onTagClick1.bind(this,text.reportno)}>{text.quanlityerr1}</Tag>]:[]}
       </Fragment>
     ]
+  };
+
+  onTagClick1 =(reportno)=>{
+    this.handleModalReviewVisible1(true);
+    const{dispatch} = this.props;
+    dispatch({
+      type: 'main/qualityErrView',
+      payload:{reportno},
+      callback:(response) =>{
+        if(response.code===200){
+          this.setState({exceptionData1:response.data});
+        }
+      }
+    });
   };
 
   previewItem = text => {
@@ -1000,7 +1083,11 @@ class MainQuery extends PureComponent {
   };
 
 
-
+  handleModalReviewVisible1 = (flag) => {
+    this.setState({
+      modalReviewVisible1: !!flag,
+    });
+  };
 
 
   render() {
@@ -1012,10 +1099,12 @@ class MainQuery extends PureComponent {
     const { getFieldDecorator, getFieldValue } = this.props.form;
     getFieldDecorator('keys', { initialValue: [] });
     const keys = getFieldValue('keys');
-    const { mainResult, peopleVisible,man ,showVisible,value,treeData,loadingState ,reportDetail,modalReviewVisible,exceptionData } = this.state;
+    const { mainResult, peopleVisible,man ,showVisible,value,treeData,
+      loadingState ,reportDetail,modalReviewVisible,exceptionData ,modalReviewVisible1,exceptionData1 } = this.state;
     const user = JSON.parse(localStorage.getItem("customs_userinfo"));
     const parentMethods = {
       handleModalReviewVisible:this.handleModalReviewVisible,
+      handleModalReviewVisible1:this.handleModalReviewVisible1,
       showCancel: this.showCancel,
       onSelect:this.onSelect,
       reviewReport:this.reviewReport,
@@ -1129,6 +1218,7 @@ class MainQuery extends PureComponent {
         </Card>
         <CertForm {...parentMethods} loading={loading} showVisible={showVisible} treeData={treeData} value={value} reportDetail={reportDetail} user={user} />
         <ReviewFrom {...parentMethods} loading={loading} modalReviewVisible={modalReviewVisible} exceptionData={exceptionData} />
+        <ReviewFrom1 {...parentMethods} loading={loading} modalReviewVisible1={modalReviewVisible1} exceptionData1={exceptionData1} />
         <Modal
           title="人员"
           visible={peopleVisible}

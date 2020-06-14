@@ -1,6 +1,7 @@
 import { getAllMan, getReportByCustoms, getAllReadRecords, getRecordInfo, queryReport, getRecord,addReadRecordByCustoms,
   returnReadRecordByCustoms,getCompanyList,selectCheckWeightForCustoms} from '@/services/Main';
-import {addReadRecord,getPreCustomReceiveListByCustomsName,acceptReceive,refuseReceive,getCustomReceiveListByCustomsName,}  from '@/services/costoms';
+import {addReadRecord,getPreCustomReceiveListByCustomsName,acceptReceive,
+  refuseReceive,getCustomReceiveListByCustomsName,qualityErrView}  from '@/services/costoms';
 import {getAllUserListByCertCode} from '@/services/Certificate'
 import { getInstrument} from '@/services/Intrusment';
 
@@ -23,6 +24,10 @@ export default {
   },
 
   effects: {
+    *qualityErrView({ payload,callback }, { call, put }) {
+      const response = yield call(qualityErrView, payload);
+      if (callback) callback(response);
+    },
 
     *getCustomReceiveListByCustomsName({ payload,callback }, { call, put }) {
       const response = yield call(getCustomReceiveListByCustomsName, payload);
