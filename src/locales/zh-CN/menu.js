@@ -42,6 +42,7 @@ export default {
   'menu.Main.CustomsReceive': '已接受机构',
   'menu.Main.CustomsReceiveForSamples':'样品指标',
   'menu.Main.SampleIndex':'样品指标',
+  'menu.Main.ResultDetail':'检验结果',
   'menu.Personal.UserInfo':'密码修改',
   'menu.Personal':'个人设置',
 

@@ -138,6 +138,13 @@ export default [
             hideInMenu: 'true',//添加页不需要在menu上显示
           },
 
+          {
+            path: '/Main/ResultDetail',
+            name: 'ResultDetail',
+            component: './Main/ResultDetail',
+            hideInMenu: 'true',//添加页不需要在menu上显示
+          },
+
         ],
       },
 

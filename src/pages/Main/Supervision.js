@@ -322,9 +322,8 @@ class Supervision extends PureComponent {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.reviewItem(text, record)}>查看</a>&nbsp;&nbsp;
-          <a onClick={() => this.quantityItem(text, record)}>数重量</a>&nbsp;&nbsp;
-          <a onClick={() => this.qualityItem(text, record)}>品质</a>&nbsp;&nbsp;
+          <a onClick={() => this.modifyItem(text, record)}>数重量&nbsp;&nbsp;</a>
+          <a onClick={() => this.qualityItem(text, record)}>品质&nbsp;&nbsp;</a>
           {/*{text.overallstate==="已发布"?[<a onClick={() => this.approveItem(text, record)}>审阅&nbsp;&nbsp;</a>]:[<span>审阅&nbsp;&nbsp;</span>]}*/}
           <a onClick={() => this.previewItem(text, record)}>委托详情</a>
         </Fragment>
@@ -372,6 +371,19 @@ class Supervision extends PureComponent {
       return <span>{moment(date).format('YYYY-MM-DD')}</span>;
     }
     return [];
+  };
+
+
+
+  modifyItem = text => {
+    sessionStorage.setItem('reportno',text.reportno);
+    sessionStorage.setItem('shipname',text.shipname);
+    sessionStorage.setItem('applicant',text.applicant);
+    sessionStorage.setItem('resultdetail_quanlity',text.quantityd);
+    sessionStorage.setItem('resultdetail_overallstate',text.overallstate);
+    router.push({
+      pathname:'/Main/ResultDetail',
+    });
   };
 
   getExceptionInfo =(text)=>{
