@@ -644,7 +644,16 @@ class SampleModify extends PureComponent {
 
               <Form.Item label="参考值">
                {getFieldDecorator('refervalue1', {
-                rules: [{ required:false, message: '请输入数值'}],
+                 rules: [{
+                   type: 'number',
+                   required:true,
+                   transform(value) {
+                     if (value) {
+                       return Number(value);
+                     }
+                   },
+                   message: '请输入数字或者小数'
+                 }],
               })(
                 <Input disabled={this.state.orfixed} />
                 )}

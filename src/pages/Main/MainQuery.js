@@ -37,14 +37,16 @@ const ReviewFrom1 = (props => {
       title: '样品名称',
       dataIndex: 'samplename',
     },
+
+    {
+      title: '指标名称',
+      dataIndex:'itemC',
+    },
     {
       title: '检验标准',
       dataIndex: 'teststandard',
     },
-    // {
-    //   title: '单位',
-    //   dataIndex: 'unit',
-    // },
+
     {
       title: '检验结果',
       dataIndex: 'testresult',
@@ -56,6 +58,10 @@ const ReviewFrom1 = (props => {
     {
       title: '偏差',
       dataIndex: 'diffvalue1',
+    },
+    {
+      title: '样品备注',
+      dataIndex: 'weight',
     },
     {
       title: '状态',
